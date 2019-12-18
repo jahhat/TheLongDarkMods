@@ -3,4 +3,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="UnlimitedSaveSlots.licenseheader" />
+  </ItemGroup>
 </Project>

@@ -3,4 +3,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ModLoaderProxy.licenseheader" />
+  </ItemGroup>
 </Project>

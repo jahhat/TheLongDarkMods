@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="UnlimitedSaveSlots.licenseheader" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{0F6BB7C5-5289-4E31-8EBF-58C753C9C4E0}</ProjectGuid>
