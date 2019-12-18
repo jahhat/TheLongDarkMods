@@ -4,12 +4,12 @@
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ModLoader.licenseheader" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ModLoader.rc" />
+    <None Include="DisableBreathingEffect.licenseheader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DisableBreathingEffect.rc" />
   </ItemGroup>
 </Project>
