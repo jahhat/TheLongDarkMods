@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnlimitedSaveSlots", "Unlim
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModLoaderProxy", "ModLoaderProxy\ModLoaderProxy.vcxproj", "{A7002198-025D-4946-A049-678B5B70DE4B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModLoader", "ModLoader\ModLoader.vcxproj", "{344B3D27-86D2-4C62-B48A-50149B2EE96F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{A7002198-025D-4946-A049-678B5B70DE4B}.Release|x64.Build.0 = Release|x64
 		{A7002198-025D-4946-A049-678B5B70DE4B}.Release|x86.ActiveCfg = Release|Win32
 		{A7002198-025D-4946-A049-678B5B70DE4B}.Release|x86.Build.0 = Release|Win32
+		{344B3D27-86D2-4C62-B48A-50149B2EE96F}.Debug|x64.ActiveCfg = Debug|x64
+		{344B3D27-86D2-4C62-B48A-50149B2EE96F}.Debug|x64.Build.0 = Debug|x64
+		{344B3D27-86D2-4C62-B48A-50149B2EE96F}.Debug|x86.ActiveCfg = Debug|Win32
+		{344B3D27-86D2-4C62-B48A-50149B2EE96F}.Debug|x86.Build.0 = Debug|Win32
+		{344B3D27-86D2-4C62-B48A-50149B2EE96F}.Release|x64.ActiveCfg = Release|x64
+		{344B3D27-86D2-4C62-B48A-50149B2EE96F}.Release|x64.Build.0 = Release|x64
+		{344B3D27-86D2-4C62-B48A-50149B2EE96F}.Release|x86.ActiveCfg = Release|Win32
+		{344B3D27-86D2-4C62-B48A-50149B2EE96F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

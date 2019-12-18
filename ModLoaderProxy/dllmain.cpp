@@ -33,7 +33,7 @@ void UnityMain() {
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
    if (reason == DLL_PROCESS_ATTACH)
-      LoadLibrary(L"mloader.dll");
+      LoadLibrary(L"ModLoader.dll");
    return TRUE;
 }
 
