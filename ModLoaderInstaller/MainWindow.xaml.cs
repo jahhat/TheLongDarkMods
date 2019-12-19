@@ -51,7 +51,7 @@ namespace ModLoaderInstaller {
       }
       private void BtnInstallModLoader_Click(Object sender, RoutedEventArgs e) {
          try {
-            if (!File.Exists("ModLoader.dll") || !File.Exists("UnityPlayer.dll")) {
+            if (!File.Exists("ModLoader.dll") || (!File.Exists("UnityPlayer.dll") && !File.Exists("ModLoaderProxy.dll"))) {
                MessageBox.Show("Mod loader installation files are missing. Are you running this from the archive?\r\n" +
                   "If so, extract all and restart the installation.\r\n" +
                   "If not, archive may be corrupt. Redownload the mod loader.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -78,7 +78,10 @@ namespace ModLoaderInstaller {
             }
             // Install ModLoader
             {
-               File.Copy("UnityPlayer.dll", Path.Combine(gameDir, "UnityPlayer.dll"), true);
+               if (!File.Exists("UnityPlayer.dll"))
+                  File.Copy("ModLoaderProxy.dll", Path.Combine(gameDir, "UnityPlayer.dll"), true);
+               else
+                  File.Copy("UnityPlayer.dll", Path.Combine(gameDir, "UnityPlayer.dll"), true);
                File.Copy("ModLoader.dll", Path.Combine(gameDir, "ModLoader.dll"), true);
 
                if (!Directory.Exists(Path.Combine(gameDir, "Mods")))
