@@ -33,11 +33,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ModLoaderInstaller")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Installs the mod loader for The Long Dark v1.60 and up.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ModLoaderInstaller")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCopyright("Copyright © berkayylmao")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
