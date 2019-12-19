@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModLoader", "ModLoader\ModL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DisableBreathingEffect", "DisableBreathingEffect\DisableBreathingEffect.vcxproj", "{1D1E33DC-D976-44F6-B87F-AA146D9C38D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModLoaderInstaller", "ModLoaderInstaller\ModLoaderInstaller.csproj", "{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModLoaderInstaller", "ModLoaderInstaller\ModLoaderInstaller.csproj", "{53962BE1-AE00-4304-83FD-BBA5F8E905A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,18 +63,18 @@ Global
 		{1D1E33DC-D976-44F6-B87F-AA146D9C38D1}.Release|x64.Build.0 = Release|x64
 		{1D1E33DC-D976-44F6-B87F-AA146D9C38D1}.Release|x86.ActiveCfg = Release|Win32
 		{1D1E33DC-D976-44F6-B87F-AA146D9C38D1}.Release|x86.Build.0 = Release|Win32
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Debug|x64.Build.0 = Debug|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Debug|x86.Build.0 = Debug|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Release|x64.ActiveCfg = Release|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Release|x64.Build.0 = Release|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Release|x86.ActiveCfg = Release|Any CPU
-		{2E89067E-F2AA-4385-9E6F-CC304C8CF6F0}.Release|x86.Build.0 = Release|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Debug|x64.Build.0 = Debug|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Debug|x86.Build.0 = Debug|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Release|x64.ActiveCfg = Release|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Release|x64.Build.0 = Release|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Release|x86.ActiveCfg = Release|Any CPU
+		{53962BE1-AE00-4304-83FD-BBA5F8E905A5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
