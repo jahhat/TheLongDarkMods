@@ -87,6 +87,18 @@ namespace ModLoaderInstaller {
                if (!Directory.Exists(Path.Combine(gameDir, "Mods")))
                   Directory.CreateDirectory(Path.Combine(gameDir, "Mods"));
             }
+            // Check for "Mods" folder near the installer file
+            {
+               if (Directory.Exists("Mods") && Directory.GetFiles("Mods").Length > 0) {
+                  var dialogResult = MessageBox.Show("Would you like to install the mods inside the 'Mods' folder?", "TLD Mod Loader Installer", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                  if (dialogResult == MessageBoxResult.Yes) {
+                     foreach (var file in Directory.EnumerateFiles("Mods")) {
+                        if (file.EndsWith(".dll"))
+                           File.Copy(file, Path.Combine(gameDir, file), true);
+                     }
+                  }
+               }
+            }
 
             lblInstallStatus.Visibility = Visibility.Visible;
          } catch (DirectoryNotFoundException) {
