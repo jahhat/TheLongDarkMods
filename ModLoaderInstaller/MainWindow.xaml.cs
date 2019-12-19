@@ -51,8 +51,10 @@ namespace ModLoaderInstaller {
       }
       private void BtnInstallModLoader_Click(Object sender, RoutedEventArgs e) {
          try {
-            if (!File.Exists("ModLoader.dll")) {
-               MessageBox.Show("Mod loader installation files are missing. Are you running this from the archive?", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (!File.Exists("ModLoader.dll") || !File.Exists("UnityPlayer.dll")) {
+               MessageBox.Show("Mod loader installation files are missing. Are you running this from the archive?\r\n" +
+                  "If so, extract all and restart the installation.\r\n" +
+                  "If not, archive may be corrupt. Redownload the mod loader.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                return;
             }
 
@@ -88,6 +90,9 @@ namespace ModLoaderInstaller {
             MessageBox.Show("Selected TLD folder no longer exists. Installation cancelled.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
          } catch (ArgumentException) {
             MessageBox.Show("Selected TLD folder is missing 'UnityPlayer.dll'. Installation cancelled.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+         } catch (FileNotFoundException ex) {
+            if (ex.FileName == "UnityPlayer.dll" || ex.FileName == "ModLoader.dll")
+               MessageBox.Show("Mod loader installation files are missing. Installation cancelled.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
          } catch (IOException) {
             MessageBox.Show("TLD is currently running. Please close the game and restart the installation.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
          } catch (UnauthorizedAccessException) {
