@@ -29,7 +29,7 @@
 #include <string>
 
 HMODULE hThisModule = NULL;
-const std::string szModsFolderName = "mods";
+const std::string szModsFolderName = "Mods";
 
 DWORD WINAPI Init(LPVOID) {
    wchar_t gameDir[MAX_PATH] ={ 0 };
