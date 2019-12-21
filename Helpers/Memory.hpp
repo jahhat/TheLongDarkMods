@@ -30,13 +30,14 @@
 
 namespace Memory {
    static CRITICAL_SECTION cs;
-   static DWORD oldMemoryAccess, memoryAccessAddress;
+   static DWORD64 baseAddress, memoryAccessAddress;
+   static DWORD   oldMemoryAccess;
    static int32_t memoryAccessSize;
 
-   static void openMemoryAccess(const DWORD64 address, const int32_t size) {
-      memoryAccessAddress = address;
+   static void openMemoryAccess(const DWORD64 address, const bool isAddressAbsolute, const int32_t size) {
+      memoryAccessAddress = address + (isAddressAbsolute ? 0 : baseAddress);
       memoryAccessSize = size;
-      VirtualProtect((LPVOID)address, size, PAGE_EXECUTE_READWRITE, &oldMemoryAccess);
+      VirtualProtect((LPVOID)memoryAccessAddress, size, PAGE_EXECUTE_READWRITE, &oldMemoryAccess);
    }
    static void restoreMemoryAccess() {
       VirtualProtect((LPVOID)memoryAccessAddress, memoryAccessSize, oldMemoryAccess, &oldMemoryAccess);
@@ -48,48 +49,58 @@ namespace Memory {
       return (DWORD32)(to - from - 0x5);
    }
 
-   void writeRaw(const DWORD64 to, const int32_t byteCount, ...) {
+   void writeRaw(const DWORD64 to, const bool isToAbsolute, const int32_t byteCount, ...) {
+      DWORD64 addr = to + (isToAbsolute ? 0 : baseAddress);
+
       EnterCriticalSection(&cs);
-      openMemoryAccess(to, byteCount);
+      openMemoryAccess(addr, true, byteCount);
 
       va_list bytes;
       va_start(bytes, byteCount);
       for (int32_t i = 0; i < byteCount; i++)
-         *(BYTE*)(to + i) = va_arg(bytes, BYTE);
+         *(BYTE*)(addr + i) = va_arg(bytes, BYTE);
       va_end(bytes);
 
       restoreMemoryAccess();
       LeaveCriticalSection(&cs);
    }
 
-   static void writeCall(const DWORD64 from, const DWORD64 to) {
-      EnterCriticalSection(&cs);
-      openMemoryAccess(from, 5);
+   static void writeCall(const DWORD64 from, const bool isFromAbsolute, const DWORD64 to, const bool isToAbsolute) {
+      DWORD64 addrFrom = from + (isFromAbsolute ? 0 : baseAddress);
+      DWORD64 addrTo   = to + (isToAbsolute ? 0 : baseAddress);
 
-      *(BYTE*)(from) = 0xE8;
-      *(DWORD32*)(from + 0x1) = calculateRelativeAddress(from, to);
+      EnterCriticalSection(&cs);
+      openMemoryAccess(addrFrom, true, 5);
+
+      *(BYTE*)(addrFrom) = 0xE8;
+      *(DWORD32*)(addrFrom + 0x1) = calculateRelativeAddress(addrFrom, addrTo);
 
       restoreMemoryAccess();
       LeaveCriticalSection(&cs);
    }
 
-   static void writeJMP(const DWORD64 from, const DWORD64 to) {
-      EnterCriticalSection(&cs);
-      openMemoryAccess(from, 5);
+   static void writeJMP(const DWORD64 from, const bool isFromAbsolute, const DWORD64 to, const bool isToAbsolute) {
+      DWORD64 addrFrom = from + (isFromAbsolute ? 0 : baseAddress);
+      DWORD64 addrTo   = to + (isToAbsolute ? 0 : baseAddress);
 
-      *(BYTE*)(from) = 0xE9;
-      *(DWORD32*)(from + 0x1) = calculateRelativeAddress(from, to);
+      EnterCriticalSection(&cs);
+      openMemoryAccess(addrFrom, true, 5);
+
+      *(BYTE*)(addrFrom) = 0xE9;
+      *(DWORD32*)(addrFrom + 0x1) = calculateRelativeAddress(addrFrom, addrTo);
 
       restoreMemoryAccess();
       LeaveCriticalSection(&cs);
    }
 
-   static void writeNOP(const DWORD64 to, const int32_t amount) {
+   static void writeNOP(const DWORD64 to, const int32_t amount, const bool isToAbsolute = false) {
+      DWORD64 addr = to + (isToAbsolute ? 0 : baseAddress);
+
       EnterCriticalSection(&cs);
-      openMemoryAccess(to, amount);
+      openMemoryAccess(addr, true, amount);
 
       for (int32_t i = 0; i < amount; i++)
-         *(BYTE*)(to + i) = 0x90;
+         *(BYTE*)(addr + i) = 0x90;
 
       restoreMemoryAccess();
       LeaveCriticalSection(&cs);
@@ -97,5 +108,10 @@ namespace Memory {
 
    static void Init() {
       InitializeCriticalSection(&cs);
+
+      while (!baseAddress) {
+         baseAddress = (DWORD64)GetModuleHandle(L"GameAssembly.dll");
+         Sleep(100);
+      }
    }
 }
