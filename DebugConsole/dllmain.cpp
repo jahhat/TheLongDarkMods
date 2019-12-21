@@ -52,7 +52,7 @@ DWORD WINAPI _gameThread(LPVOID) {
       if (!setUp && GetAsyncKeyState(VK_F3) & 0x8000) {
          setUp = true;
          DWORD64 il2cppstr_uConsole = reinterpret_cast<DWORD64(__vectorcall*)(const char* str)>(gaBase + 0x282550)("uConsole"); // il2cpp_string_new_len
-         DWORD64 uConsoleResource   = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64)>(gaBase + 0xB9D9D0)(il2cppstr_uConsole); // Resources.Load
+         DWORD64 uConsoleResource   = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64)>(gaBase + 0x22B3A40)(il2cppstr_uConsole); // Resources.Load
          //DWORD64 uConsoleObject     = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64)>(gaBase + 0x224A620)(uConsoleResource); // Object.Instantiate
       }
       Sleep(1000);
@@ -91,7 +91,7 @@ void hkGameManager_Update() {
    if (!setUp && GetAsyncKeyState(VK_F3) & 0x8000) {
       setUp = true;
       DWORD64 il2cppstr_uConsole = reinterpret_cast<DWORD64(__vectorcall*)(const char* str)>(gaBase + 0x282550)("uConsole"); // il2cpp_string_new_len
-      DWORD64 uConsoleResource   = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64, DWORD64)>(gaBase + 0xB9D9D0)(il2cppstr_uConsole, NULL); // Resources.Load
+      DWORD64 uConsoleResource   = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64, DWORD64)>(gaBase + 0x22B3A40)(il2cppstr_uConsole, NULL); // Resources.Load
       //DWORD64 uConsoleObject     = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64)>(gaBase + 0x224A620)(uConsoleResource); // Object.Instantiate
    }
 }
