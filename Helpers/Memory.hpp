@@ -25,6 +25,7 @@
 
 #pragma once
 #include <windef.h>
+#include <cstdarg>
 #include <cstdint>
 
 namespace Memory {
@@ -32,7 +33,7 @@ namespace Memory {
    static DWORD oldMemoryAccess, memoryAccessAddress;
    static int32_t memoryAccessSize;
 
-   static void openMemoryAccess(const DWORD64 address, const int32_t& size) {
+   static void openMemoryAccess(const DWORD64 address, const int32_t size) {
       memoryAccessAddress = address;
       memoryAccessSize = size;
       VirtualProtect((LPVOID)address, size, PAGE_EXECUTE_READWRITE, &oldMemoryAccess);
@@ -47,10 +48,24 @@ namespace Memory {
       return (DWORD32)(to - from - 0x5);
    }
 
+   void writeRaw(const DWORD64 to, const int32_t byteCount, ...) {
+      EnterCriticalSection(&cs);
+      openMemoryAccess(to, byteCount);
+
+      va_list bytes;
+      va_start(bytes, byteCount);
+      for (int32_t i = 0; i < byteCount; i++)
+         *(BYTE*)(to + i) = va_arg(bytes, BYTE);
+      va_end(bytes);
+
+      restoreMemoryAccess();
+      LeaveCriticalSection(&cs);
+   }
+
    static void writeCall(const DWORD64 from, const DWORD64 to) {
       EnterCriticalSection(&cs);
-
       openMemoryAccess(from, 5);
+
       *(BYTE*)(from) = 0xE8;
       *(DWORD32*)(from + 0x1) = calculateRelativeAddress(from, to);
 
@@ -60,10 +75,21 @@ namespace Memory {
 
    static void writeJMP(const DWORD64 from, const DWORD64 to) {
       EnterCriticalSection(&cs);
-
       openMemoryAccess(from, 5);
+
       *(BYTE*)(from) = 0xE9;
       *(DWORD32*)(from + 0x1) = calculateRelativeAddress(from, to);
+
+      restoreMemoryAccess();
+      LeaveCriticalSection(&cs);
+   }
+
+   static void writeNOP(const DWORD64 to, const int32_t amount) {
+      EnterCriticalSection(&cs);
+      openMemoryAccess(to, amount);
+
+      for (int32_t i = 0; i < amount; i++)
+         *(BYTE*)(to + i) = 0x90;
 
       restoreMemoryAccess();
       LeaveCriticalSection(&cs);
