@@ -28,6 +28,9 @@
 #include <windows.h>
 #include "../Helpers/Memory.hpp"
 
+constexpr bool HookToCreateRemoteThread = false;
+constexpr bool HookGameManagerUpdate    = true;
+
 DWORD64 gaBase = NULL;
 DWORD WINAPI _gameThread(LPVOID) {
    // il2cpp_thread_attach
@@ -61,7 +64,15 @@ DWORD WINAPI _gameThread(LPVOID) {
 }
 
 #pragma optimize( "", off )
-void asmProxy() {
+void asmProxyRemoteThread() {
+   DWORD64 ff = 9999999999999;
+   DWORD64 zz = ff / 2;
+   while (zz > ff) {
+      ff = zz;
+      zz = ff / 2;
+   }
+}
+void asmProxyGameManagerHook() {
    DWORD64 ff = 9999999999999;
    DWORD64 zz = ff / 2;
    while (zz > ff) {
@@ -107,17 +118,17 @@ DWORD WINAPI Init(LPVOID) {
    //reinterpret_cast<void(__vectorcall*)(LPVOID)>(gaBase + 0x282720)( // il2cpp_thread_attachk
    //   reinterpret_cast<LPVOID(__vectorcall*)()>(gaBase + 0x2816A0)() // il2cpp_domain_get
    //);
-
-   Memory::writeRaw((DWORD64)asmProxy, 7, 0x45, 0x33, 0xC9, 0x4C, 0x8B, 0xC7, 0xC3);
-   Memory::writeJMP((DWORD64)hkInstantiateInterfaceObjects + 0x2D, (DWORD64)asmProxy);
-   Memory::writeCall(gaBase + 0x712166, (DWORD64)hkInstantiateInterfaceObjects);
-   Memory::writeNOP(gaBase + 0x712166 + 0x5, 1);
-
-   // // Hook GameManager::Update -> ret
-   //Memory::writeRaw((DWORD64)asmProxy, 5, 0x41, 0x5E, 0x5F, 0x5D, 0xC3);
-   //Memory::writeJMP((DWORD64)hkGameManager_Update + 0xED, (DWORD64)asmProxy);
-   //Memory::writeJMP(gaBase + 0x36FD92, (DWORD64)hkGameManager_Update);
-
+   if (HookToCreateRemoteThread) {
+      Memory::writeRaw((DWORD64)asmProxyRemoteThread, 7, 0x45, 0x33, 0xC9, 0x4C, 0x8B, 0xC7, 0xC3);
+      Memory::writeJMP((DWORD64)hkInstantiateInterfaceObjects + 0x2D, (DWORD64)asmProxyRemoteThread);
+      Memory::writeCall(gaBase + 0x712166, (DWORD64)hkInstantiateInterfaceObjects);
+      Memory::writeNOP(gaBase + 0x712166 + 0x5, 1);
+   }
+   if (HookGameManagerUpdate) {
+      Memory::writeRaw((DWORD64)asmProxyGameManagerHook, 5, 0x41, 0x5E, 0x5F, 0x5D, 0xC3);
+      Memory::writeJMP((DWORD64)hkGameManager_Update + 0xED, (DWORD64)asmProxyGameManagerHook);
+      Memory::writeJMP(gaBase + 0x36FD92, (DWORD64)hkGameManager_Update);
+   }
    return TRUE;
 }
 
