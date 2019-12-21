@@ -34,10 +34,8 @@ DWORD WINAPI Init(LPVOID) {
       gaBase = (DWORD64)GetModuleHandle(L"GameAssembly.dll");
       Sleep(1000);
    }
-   DWORD64 from = gaBase + 0x585854;
-   DWORD64 to   = gaBase + 0x58599B;
 
-   Memory::writeJMP(from, to);
+   Memory::writeJMP(0x585854, false, 0x58599B, false);
    return FALSE;
 }
 
