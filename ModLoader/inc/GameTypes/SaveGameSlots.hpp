@@ -23,20 +23,25 @@
    SOFTWARE.
 */
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include "../ModLoader/inc/ModLoader.hpp"
-#include "../ModLoader/inc/GameTypes/SaveGameSlots.hpp"
+#include "../ModLoader.hpp"
+#include "../IL2CPPTypes/Il2CppString.hpp"
 
-namespace ModLoader {
-   void MODLOADER_API OnLoad() {
-      MODLOADER_MAKE_FUNCTION_ACCESSIBLE();
-      auto* pSaveGameSlots = ModLoader::GetGameClassInstanceAt<SaveGameSlots>(SaveGameSlots::_ClassInstanceOffset);
-      pSaveGameSlots->MAX_SAVESLOTS = 999;
-   }
-}
+MODLOADER_NAMESPACE_BEGIN()
+struct SaveGameSlots {
+   static inline DWORD64 _ClassInstanceOffset = 0x3C6BF40;
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   MODLOADER_DISABLE_THREAD_CALLS(hModule, reason);
-   return TRUE;
-}
+   /* +0x00 */ Il2CppString AUTOSAVE_SLOT_NAME;
+   /* +0x08 */ Il2CppString SANDBOX_SLOT_PREFIX;
+   /* +0x10 */ Il2CppString STORY_SLOT_PREFIX;
+   /* +0x18 */ Il2CppString CHALLENGE_SLOT_PREFIX;
+   /* +0x20 */ Il2CppString CHECKPOINT_SLOT_PREFIX;
+   /* +0x28 */ Il2CppString AUTOSAVE_SLOT_PREFIX;
+   /* +0x30 */ Il2CppString QUICKSAVE_SLOT_PREFIX;
+   /* +0x38 */ int32_t      MAX_AUTOSAVES;
+   /* +0x3C */ int32_t      MAX_SAVESLOTS;
+   /* +0x00 */ //SlotData m_AutoSaveSlot; 
+   /* +0x00 */ //List<SlotData> m_SaveSlots; 
+   /* +0x00 */ //HashSet<string> m_InvalidSlots; 
+   /* +0x00 */ //Dictionary<string, string> m_SlotDisplayNames; 
+};
+MODLOADER_NAMESPACE_END()

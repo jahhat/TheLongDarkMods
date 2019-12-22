@@ -95,6 +95,8 @@
       </PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ControlFlowGuard>false</ControlFlowGuard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,6 +162,10 @@
     <None Include="ModLoader.licenseheader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="inc\GameTypes\SaveGameSlots.hpp" />
+    <ClInclude Include="inc\IL2CPPTypes\Il2CppObject.hpp" />
+    <ClInclude Include="inc\IL2CPPTypes\Il2CppString.hpp" />
+    <ClInclude Include="inc\ModLoader.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

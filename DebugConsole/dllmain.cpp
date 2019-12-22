@@ -80,8 +80,8 @@ DWORD WINAPI Init(LPVOID) {
 
    Memory::writeRaw((DWORD64)asmProxyRemoteThread, true, 7, 0x45, 0x33, 0xC9, 0x4C, 0x8B, 0xC7, 0xC3);
    Memory::writeJMP((DWORD64)hkInstantiateInterfaceObjects + 0x2D, true, (DWORD64)asmProxyRemoteThread, true);
-   Memory::writeCall(0x712166, false, (DWORD64)hkInstantiateInterfaceObjects, true);
-   Memory::writeNOP(0x712166 + 0x5, 1);
+   Memory::writeCall(0x712ED0, false, (DWORD64)hkInstantiateInterfaceObjects, true);
+   Memory::writeNOP(0x712ED0 + 0x5, 1);
 
    MirrorHook::PrepareFor(MirrorHook::Game::UniversalD3D11, L"TheLongDark");
    return TRUE;

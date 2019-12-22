@@ -27,6 +27,7 @@
 #include <windows.h>
 #include <filesystem>
 #include <string>
+#include <thread>
 
 HMODULE hThisModule = NULL;
 const std::string szModsFolderName = "Mods";
@@ -65,6 +66,9 @@ DWORD WINAPI Init(LPVOID) {
                std::wstring msg = L"Unable to load " + modAbsolutePath.wstring() + L".\n\nError:\n" + std::to_wstring(e);
                MessageBox(NULL, msg.c_str(), L"TLD ModLoader", MB_ICONERROR);
             }
+         } else {
+            if (auto fnOnLoad = GetProcAddress(handle, "ModLoader::OnLoad"))
+               std::thread(reinterpret_cast<void(__stdcall*)()>(fnOnLoad)).detach();
          }
       }
    }
@@ -75,6 +79,7 @@ DWORD WINAPI Init(LPVOID) {
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
    if (reason == DLL_PROCESS_ATTACH) {
       hThisModule = hModule;
+      DisableThreadLibraryCalls(hModule);
       CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
    }
    return TRUE;

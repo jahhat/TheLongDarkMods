@@ -23,20 +23,11 @@
    SOFTWARE.
 */
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include "../ModLoader/inc/ModLoader.hpp"
-#include "../ModLoader/inc/GameTypes/SaveGameSlots.hpp"
+#include "../ModLoader.hpp"
 
-namespace ModLoader {
-   void MODLOADER_API OnLoad() {
-      MODLOADER_MAKE_FUNCTION_ACCESSIBLE();
-      auto* pSaveGameSlots = ModLoader::GetGameClassInstanceAt<SaveGameSlots>(SaveGameSlots::_ClassInstanceOffset);
-      pSaveGameSlots->MAX_SAVESLOTS = 999;
-   }
-}
-
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   MODLOADER_DISABLE_THREAD_CALLS(hModule, reason);
-   return TRUE;
-}
+MODLOADER_NAMESPACE_BEGIN()
+struct Il2CppObject{
+	LPVOID pTypeInfo;
+	LPVOID pMonitorData;
+};
+MODLOADER_NAMESPACE_END()

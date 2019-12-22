@@ -28,12 +28,18 @@
 
 void UnityMain() {
 #pragma comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
-   reinterpret_cast<void(WINAPI*)()>(_Notnull_ GetProcAddress(LoadLibrary(L"RealUnityPlayer.dll"), "UnityMain"))();
+   reinterpret_cast<void(__fastcall*)()>(_Notnull_ GetProcAddress(LoadLibraryW(L"RealUnityPlayer.dll"), "UnityMain"))();
+}
+
+DWORD WINAPI Init(LPVOID) {
+   LoadLibraryW(L"ModLoader.dll");
+   return FALSE;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH)
-      LoadLibrary(L"ModLoader.dll");
+   if (reason == DLL_PROCESS_ATTACH) {
+      DisableThreadLibraryCalls(hModule);
+      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
+   }
    return TRUE;
 }
-

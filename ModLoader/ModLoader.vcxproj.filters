@@ -4,12 +4,44 @@
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ModLoader.licenseheader" />
+    <ClInclude Include="inc\ModLoader.hpp">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>default</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\IL2CPPTypes\Il2CppString.hpp">
+      <Filter>inc\IL2CPPTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\IL2CPPTypes\Il2CppObject.hpp">
+      <Filter>inc\IL2CPPTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameTypes\SaveGameSlots.hpp">
+      <Filter>inc\GameTypes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
+    <Filter Include="default">
+      <UniqueIdentifier>{84a9d7b4-4281-4fb1-8e62-ef0ff5ceced2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{23b1f2d5-340b-4c64-b2a6-07e1b1240af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\IL2CPPTypes">
+      <UniqueIdentifier>{36d8dc0c-9ffb-470a-a0bf-acb1096f37fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\GameTypes">
+      <UniqueIdentifier>{3912c499-c414-44be-a2d4-5c890ee87962}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ModLoader.rc" />
+    <ResourceCompile Include="ModLoader.rc">
+      <Filter>default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ModLoader.licenseheader">
+      <Filter>default</Filter>
+    </None>
   </ItemGroup>
 </Project>
