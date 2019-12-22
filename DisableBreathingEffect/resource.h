@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by DisableBreathEffect.rc
+// Used by DisableBreathingEffect.rc
 //
 
 // Next default values for new objects

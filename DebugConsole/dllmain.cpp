@@ -24,40 +24,37 @@
    SOFTWARE.
 */
 
+#define MIRRORHOOK_DEFINITIONS_PATH "C:\Users\berkay\source\repos\MirrorHook\MirrorHook\inc\Definitions.hpp"
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "../Helpers/Memory.hpp"
+#include <d3d11.h>
+#include MIRRORHOOK_DEFINITIONS_PATH
 
-constexpr bool HookToCreateRemoteThread = false;
-constexpr bool HookGameManagerUpdate    = true;
-
-DWORD64 gaBase = NULL;
 DWORD WINAPI _gameThread(LPVOID) {
-   // il2cpp_thread_attach
-   reinterpret_cast<void(__vectorcall*)(LPVOID)>(gaBase + 0x282720)(
-      // il2cpp_domain_get
-      reinterpret_cast<LPVOID(__vectorcall*)()>(gaBase + 0x2816A0)()
-      );
-
    for (;;) {
       if (GetAsyncKeyState(VK_F1) & 0x8000) {
          OutputDebugString(L"I see what you did there...");
       }
       if (GetAsyncKeyState(VK_F2) & 0x8000) {
-         DWORD64* pInst = (DWORD64*)(gaBase + 0x3C1E218); // InterfaceManager class instance offset
+         DWORD64* pInst = (DWORD64*)(Memory::baseAddress + 0x3C1E218); // InterfaceManager class instance offset
          DWORD64* pInst_RealInstance = (DWORD64*)(_Notnull_ *pInst + 0xB8);
          DWORD64* pInst_Panel_Debug = (DWORD64*)(_Notnull_ *pInst_RealInstance + 0xE8);
 
          //reinterpret_cast<void(__vectorcall*)(DWORD64 _this)>(gaBase + 0x98C1E0)(*pInst_Panel_Debug); // Panel_Debug::Start -> crashes on GenerateLocation* calls (game bug)
-         reinterpret_cast<void(__vectorcall*)(DWORD64 _this, bool)>(gaBase + 0x98EA60)(*pInst_Panel_Debug, true); // Panel_Debug::Enable(bool)
+         reinterpret_cast<void(__fastcall*)(DWORD64 _this, bool)>(Memory::baseAddress + 0x98EA60)(*pInst_Panel_Debug, true); // Panel_Debug::Enable(bool)
       }
       static bool setUp = false;
       if (!setUp && GetAsyncKeyState(VK_F3) & 0x8000) {
          setUp = true;
-         DWORD64 il2cppstr_uConsole = reinterpret_cast<DWORD64(__vectorcall*)(const char* str)>(gaBase + 0x282550)("uConsole"); // il2cpp_string_new_len
-         DWORD64 uConsoleResource   = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64)>(gaBase + 0x22B3A40)(il2cppstr_uConsole); // Resources.Load
+         DWORD64 il2cppstr_uConsole = reinterpret_cast<DWORD64(__fastcall*)(const char* str)>(Memory::baseAddress + 0x282550)("uconsole"); // il2cpp_string_new_len
+         DWORD64 uConsoleResource   = reinterpret_cast<DWORD64(__fastcall*)(DWORD64)>(Memory::baseAddress + 0x22B3A40)(il2cppstr_uConsole); // Resources.Load -> crashes on uConsole specifically
          //DWORD64 uConsoleObject     = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64)>(gaBase + 0x224A620)(uConsoleResource); // Object.Instantiate
       }
+      if (GetAsyncKeyState(VK_F5) & 0x8000) {
+         reinterpret_cast<void(__fastcall*)()>(Memory::baseAddress + 0x3BB410)(); // Panel_Debug::Enable(bool)
+      }
+
       Sleep(1000);
    }
    return FALSE;
@@ -72,69 +69,26 @@ void asmProxyRemoteThread() {
       zz = ff / 2;
    }
 }
-void asmProxyGameManagerHook() {
-   DWORD64 ff = 9999999999999;
-   DWORD64 zz = ff / 2;
-   while (zz > ff) {
-      ff = zz;
-      zz = ff / 2;
-   }
-}
-
 void hkInstantiateInterfaceObjects() {
    CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&_gameThread, NULL, 0, 0);
    // +0x2D
-}
-
-bool setUp = false;
-void hkGameManager_Update() {
-   if (GetAsyncKeyState(VK_F1) & 0x8000) {
-      OutputDebugString(L"I see what you did there...");
-   }
-   if (GetAsyncKeyState(VK_F2) & 0x8000) {
-      DWORD64* pInst = (DWORD64*)(gaBase + 0x3C1E218); // InterfaceManager class instance offset
-      DWORD64* pInst_RealInstance = (DWORD64*)(_Notnull_ *pInst + 0xB8);
-      DWORD64* pInst_Panel_Debug = (DWORD64*)(_Notnull_ *pInst_RealInstance + 0xE8);
-
-      //reinterpret_cast<void(__vectorcall*)(DWORD64 _this)>(gaBase + 0x98C1E0)(*pInst_Panel_Debug); // Panel_Debug::Start -> crashes on GenerateLocation* calls (game bug)
-      reinterpret_cast<void(__vectorcall*)(DWORD64 _this, bool)>(gaBase + 0x98EA60)(*pInst_Panel_Debug, true); // Panel_Debug::Enable(bool)
-   }
-   if (!setUp && GetAsyncKeyState(VK_F3) & 0x8000) {
-      setUp = true;
-      DWORD64 il2cppstr_uConsole = reinterpret_cast<DWORD64(__vectorcall*)(const char* str)>(gaBase + 0x282550)("uConsole"); // il2cpp_string_new_len
-      DWORD64 uConsoleResource   = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64, DWORD64)>(gaBase + 0x22B3A40)(il2cppstr_uConsole, NULL); // Resources.Load
-      //DWORD64 uConsoleObject     = reinterpret_cast<DWORD64(__vectorcall*)(DWORD64)>(gaBase + 0x224A620)(uConsoleResource); // Object.Instantiate
-   }
 }
 #pragma optimize( "", on)
 
 DWORD WINAPI Init(LPVOID) {
    Memory::Init();
-   while (!gaBase) {
-      gaBase = (DWORD64)GetModuleHandle(L"GameAssembly.dll");
-      Sleep(1000);
-   }
 
-   //reinterpret_cast<void(__vectorcall*)(LPVOID)>(gaBase + 0x282720)( // il2cpp_thread_attachk
-   //   reinterpret_cast<LPVOID(__vectorcall*)()>(gaBase + 0x2816A0)() // il2cpp_domain_get
-   //);
-   if (HookToCreateRemoteThread) {
-      Memory::writeRaw((DWORD64)asmProxyRemoteThread, 7, 0x45, 0x33, 0xC9, 0x4C, 0x8B, 0xC7, 0xC3);
-      Memory::writeJMP((DWORD64)hkInstantiateInterfaceObjects + 0x2D, (DWORD64)asmProxyRemoteThread);
-      Memory::writeCall(gaBase + 0x712166, (DWORD64)hkInstantiateInterfaceObjects);
-      Memory::writeNOP(gaBase + 0x712166 + 0x5, 1);
-   }
-   if (HookGameManagerUpdate) {
-      Memory::writeRaw((DWORD64)asmProxyGameManagerHook, 5, 0x41, 0x5E, 0x5F, 0x5D, 0xC3);
-      Memory::writeJMP((DWORD64)hkGameManager_Update + 0xED, (DWORD64)asmProxyGameManagerHook);
-      Memory::writeJMP(gaBase + 0x36FD92, (DWORD64)hkGameManager_Update);
-   }
+   Memory::writeRaw((DWORD64)asmProxyRemoteThread, true, 7, 0x45, 0x33, 0xC9, 0x4C, 0x8B, 0xC7, 0xC3);
+   Memory::writeJMP((DWORD64)hkInstantiateInterfaceObjects + 0x2D, true, (DWORD64)asmProxyRemoteThread, true);
+   Memory::writeCall(0x712166, false, (DWORD64)hkInstantiateInterfaceObjects, true);
+   Memory::writeNOP(0x712166 + 0x5, 1);
+
+   MirrorHook::PrepareFor(MirrorHook::Game::UniversalD3D11, L"TheLongDark");
    return TRUE;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH) {
+   if (reason == DLL_PROCESS_ATTACH)
       CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
-   }
    return TRUE;
 }

@@ -37,7 +37,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ModLoaderInstaller")]
-[assembly: AssemblyCopyright("Copyright © berkayylmao")]
+[assembly: AssemblyCopyright("MIT Copyright (c) 2019 Berkay Yigit <berkay2578@gmail.com>")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
