@@ -59,7 +59,7 @@ MODLOADER_NAMESPACE_BEGIN() {
             return NULL;
       }
 
-      _internal::baseAddress = reinterpret_cast<DWORD64>(gaHandle);
+      _internal::baseAddress = (DWORD64)gaHandle;
       return _internal::baseAddress;
    }
 
@@ -75,19 +75,23 @@ MODLOADER_NAMESPACE_BEGIN() {
          return nullptr;
 
       rvaAddress += (addBaseAddressToAddress ? GetBaseAddress(blockUntilReturn) : 0);
-      if (!*(DWORD64*)rvaAddress)
-         return nullptr;
+      if (!*(DWORD64*)rvaAddress) {
+         if (blockUntilReturn) {
+            while (!*(DWORD64*)rvaAddress)
+               Sleep(250);
+         } else {
+            return nullptr;
+         }
+      }
 
       T** ppClassInstance = reinterpret_cast<T**>(*(DWORD64*)rvaAddress + 0xB8);
-      if (ppClassInstance && !*ppClassInstance)
+      if (ppClassInstance && *ppClassInstance)
          return *ppClassInstance;
 
       if (blockUntilReturn) {
-         for (;;) {
-            if (ppClassInstance && !*ppClassInstance)
-               return *ppClassInstance;
+         while (!ppClassInstance && _Notnull_ !*ppClassInstance)
             Sleep(250);
-         }
+         return *ppClassInstance;
       }
       return nullptr;
    }
