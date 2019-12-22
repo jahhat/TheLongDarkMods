@@ -23,54 +23,84 @@
    SOFTWARE.
 */
 
+#define MIRRORHOOK_DEFINITIONS_PATH "C:\Users\berkay\source\repos\MirrorHook\MirrorHook\inc\Definitions.hpp"
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <filesystem>
 #include <string>
 #include <thread>
+#include MIRRORHOOK_DEFINITIONS_PATH
 
 HMODULE hThisModule = NULL;
 const std::string szModsFolderName = "Mods";
 
 DWORD WINAPI Init(LPVOID) {
-   wchar_t gameDir[MAX_PATH] ={ 0 };
+   wchar_t szGameDir[MAX_PATH] ={ 0 };
    // Get TLD's directory, for some reason 'std::filesystem::current_path()' returns the root directory
    {
-      if (!GetModuleFileNameW(hThisModule, gameDir, _countof(gameDir))) {
+      if (!GetModuleFileNameW(hThisModule, szGameDir, _countof(szGameDir))) {
          std::wstring msg = L"GetModuleFileNameW failed.\n\nError:\n" + std::to_wstring(GetLastError());
-         MessageBox(NULL, msg.c_str(), L"TLD ModLoader", MB_ICONERROR);
+         MessageBoxW(NULL, msg.c_str(), L"TLD ModLoader - ERROR", MB_ICONERROR);
 
          return FALSE;
       }
    }
 
-   auto& modsDir = std::filesystem::path(gameDir).parent_path() / szModsFolderName;
+   bool  loadedMirrorHook = false;
+   auto  loadedMods       = std::vector<HMODULE>();
+   auto& gameDir          = std::filesystem::path(szGameDir).parent_path();
+   auto& modsDir          = gameDir / szModsFolderName;
+
+   if (!std::filesystem::exists(gameDir / L"MirrorHook.dll")) {
+      MessageBoxW(NULL, L"MirrorHook.dll is missing. Some mods may not work/game might be unstable.", L"TLD ModLoader - WARNING", MB_ICONWARNING);
+   } else {
+      if (!LoadLibraryW((gameDir / L"MirrorHook.dll").c_str())) {
+         MessageBoxW(NULL, L"MirrorHook could not be loaded. Some mods may not work and game might be unstable.", L"TLD ModLoader - WARNING", MB_ICONWARNING);
+      } else {
+         loadedMirrorHook = true;
+      }
+   }
+
    if (std::filesystem::exists(modsDir) && std::filesystem::is_directory(modsDir)) {
-      SetCurrentDirectory(modsDir.c_str());
+      SetCurrentDirectoryW(modsDir.c_str());
 
       for (auto& file : std::filesystem::recursive_directory_iterator(modsDir)) {
          if (!std::filesystem::is_regular_file(file)) // is not a link, directory or pipe
             continue;
          if (file.path().extension().string() != ".dll") // is a dll file
             continue;
-         if (GetModuleHandle(file.path().c_str())) // is not already loaded
+         if (GetModuleHandleW(file.path().c_str())) // is not already loaded
             continue;
 
          auto& modAbsolutePath = modsDir / file.path().filename();
-         auto  handle = LoadLibrary(modAbsolutePath.c_str());
-         SetCurrentDirectory(modsDir.c_str()); // mod may change this
+         auto  handle = LoadLibraryW(modAbsolutePath.c_str());
+         SetCurrentDirectoryW(modsDir.c_str()); // mod may change this
 
          if (!handle) {
             auto e = GetLastError();
             if (e != ERROR_DLL_INIT_FAILED) {
                std::wstring msg = L"Unable to load " + modAbsolutePath.wstring() + L".\n\nError:\n" + std::to_wstring(e);
-               MessageBox(NULL, msg.c_str(), L"TLD ModLoader", MB_ICONERROR);
+               MessageBoxW(NULL, msg.c_str(), L"TLD ModLoader - ERROR", MB_ICONERROR);
             }
          } else {
-            if (auto fnOnLoad = GetProcAddress(handle, "ModLoader::OnLoad"))
-               std::thread(reinterpret_cast<void(__stdcall*)()>(fnOnLoad)).detach();
+            loadedMods.push_back(handle);
          }
       }
+   }
+   // TODO: require config.json from modders, do priority listing
+   for (auto& modDLLHandle : loadedMods) {
+      if (auto fnOnLoad = GetProcAddress(modDLLHandle, "ModLoader::OnLoad"))
+         std::thread(reinterpret_cast<void(__stdcall*)()>(fnOnLoad)).detach();
+   }
+
+   if (loadedMirrorHook) {
+      HWND windowHandle = FindWindowW(NULL, L"TheLongDark");
+      while (!windowHandle) {
+         windowHandle = FindWindowW(NULL, L"TheLongDark");
+         Sleep(100);
+      }
+
+      MirrorHook::PrepareFor(MirrorHook::Game::UniversalD3D11, L"TheLongDark");
    }
 
    return FALSE;
