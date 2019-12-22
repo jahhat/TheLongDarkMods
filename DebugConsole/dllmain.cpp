@@ -83,7 +83,6 @@ DWORD WINAPI Init(LPVOID) {
    Memory::writeCall(0x712ED0, false, (DWORD64)hkInstantiateInterfaceObjects, true);
    Memory::writeNOP(0x712ED0 + 0x5, 1);
 
-   MirrorHook::PrepareFor(MirrorHook::Game::UniversalD3D11, L"TheLongDark");
    return TRUE;
 }
 
