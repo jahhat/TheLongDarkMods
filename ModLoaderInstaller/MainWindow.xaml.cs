@@ -36,11 +36,13 @@ namespace ModLoaderInstaller {
 
       private void BtnBrowseGameDir_Click(Object sender, RoutedEventArgs e) {
          using (var dialog = new CommonOpenFileDialog() {
-            InitialDirectory = "C:\\",
             IsFolderPicker = true
          }) {
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok) {
-               if (!File.Exists(Path.Combine(dialog.FileName, "GameAssembly.dll"))) {
+               if (!File.Exists(Path.Combine(dialog.FileName, "TLD.exe"))) {
+                  MessageBox.Show("Selected folder does not have 'TLD.exe'! Please select a valid TLD folder.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+               } else if (!File.Exists(Path.Combine(dialog.FileName, "GameAssembly.dll"))) {
                   MessageBox.Show("Selected folder does not have 'GameAssembly.dll'! Please select a valid TLD v1.60+ folder.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                } else {
                   txtBoxGameDir.Text = dialog.FileName;
@@ -51,7 +53,7 @@ namespace ModLoaderInstaller {
       }
       private void BtnInstallModLoader_Click(Object sender, RoutedEventArgs e) {
          try {
-            if (!File.Exists("ModLoader.dll") || (!File.Exists("UnityPlayer.dll") && !File.Exists("ModLoaderProxy.dll"))) {
+            if (!File.Exists("ModLoader.dll") || !File.Exists("ModLoaderProxy.dll") || !File.Exists("MirrorHook.dll")) {
                MessageBox.Show("Mod loader installation files are missing. Are you running this from the archive?\r\n" +
                   "If so, extract all and restart the installation.\r\n" +
                   "If not, archive may be corrupt. Redownload the mod loader.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -78,11 +80,9 @@ namespace ModLoaderInstaller {
             }
             // Install ModLoader
             {
-               if (!File.Exists("UnityPlayer.dll"))
-                  File.Copy("ModLoaderProxy.dll", Path.Combine(gameDir, "UnityPlayer.dll"), true);
-               else
-                  File.Copy("UnityPlayer.dll", Path.Combine(gameDir, "UnityPlayer.dll"), true);
+               File.Copy("MirrorHook.dll", Path.Combine(gameDir, "MirrorHook.dll"), true);
                File.Copy("ModLoader.dll", Path.Combine(gameDir, "ModLoader.dll"), true);
+               File.Copy("ModLoaderProxy.dll", Path.Combine(gameDir, "UnityPlayer.dll"), true);
 
                if (!Directory.Exists(Path.Combine(gameDir, "Mods")))
                   Directory.CreateDirectory(Path.Combine(gameDir, "Mods"));
@@ -106,7 +106,7 @@ namespace ModLoaderInstaller {
          } catch (ArgumentException) {
             MessageBox.Show("Selected TLD folder is missing 'UnityPlayer.dll'. Installation cancelled.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
          } catch (FileNotFoundException ex) {
-            if (ex.FileName == "UnityPlayer.dll" || ex.FileName == "ModLoader.dll")
+            if (ex.FileName == "ModLoader.dll" || ex.FileName == "ModLoaderProxy.dll" || ex.FileName == "MirrorHook.dll")
                MessageBox.Show("Mod loader installation files are missing. Installation cancelled.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
          } catch (IOException) {
             MessageBox.Show("TLD is currently running. Please close the game and restart the installation.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
