@@ -38,7 +38,6 @@
 #define MODLOADER_DISABLE_THREAD_CALLS(hModule, reason) if (reason == DLL_PROCESS_ATTACH) DisableThreadLibraryCalls(hModule)
 
 MODLOADER_NAMESPACE_BEGIN()
-
 /// <summary>Gets the base address of GameAssembly.dll</summary>
 /// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
 /// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
@@ -53,10 +52,15 @@ DWORD64 MODLOADER_API GetBaseAddress(bool blockUntilReturn = true) {
    return reinterpret_cast<DWORD64>(gaHandle);
 }
 
+/// <summary>Gets the class instance of the requested type from the given address.</summary>
+/// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
+/// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
 template <typename T>
-T* GetGameClassInstanceAt(DWORD64 address, bool addBaseAddressToAddress = true) {
+T* GetGameClassInstanceAt(DWORD64 address, const bool addBaseAddressToAddress = true) {
    if (!address)
       return nullptr;
+
+   address += addBaseAddressToAddress;
    if (!*address)
       return nullptr;
 
