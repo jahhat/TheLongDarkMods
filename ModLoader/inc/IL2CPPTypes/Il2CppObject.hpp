@@ -23,6 +23,7 @@
    SOFTWARE.
 */
 
+#pragma once
 #include "../ModLoader.hpp"
 
 MODLOADER_NAMESPACE_BEGIN() {

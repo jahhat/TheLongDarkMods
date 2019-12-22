@@ -23,6 +23,7 @@
    SOFTWARE.
 */
 
+#pragma once
 #include "../ModLoader.hpp"
 #include "../IL2CPPTypes/Il2CppString.hpp"
 
