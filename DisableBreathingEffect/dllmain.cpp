@@ -24,23 +24,21 @@
 */
 
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
 #include "../Helpers/Memory.hpp"
+#include "../ModLoader/inc/ModLoader.hpp"
 
-DWORD WINAPI Init(LPVOID) {
-   Memory::Init();
-   DWORD64 gaBase = NULL;
-   while (!gaBase) {
-      gaBase = (DWORD64)GetModuleHandle(L"GameAssembly.dll");
-      Sleep(1000);
+namespace ModLoader {
+   void MODLOADER_API OnLoad() {
+      MODLOADER_MAKE_FUNCTION_ACCESSIBLE();
+      Memory::Init();
+      Memory::writeJMP(0x586AA1, false, // right after "if (this.ShouldSuppressBreathEffect()) return;"
+                       0x586B5D, false  // "if (GameManager.GetPlayerAnimationComponent().IsAiming() && GameManager.GetFreezingComponent().IsFreezing())"
+      );
    }
-
-   Memory::writeJMP(0x585854, false, 0x58599B, false);
-   return FALSE;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH)
-      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
+   MODLOADER_DISABLE_THREAD_CALLS(hModule, reason);
    return TRUE;
 }
