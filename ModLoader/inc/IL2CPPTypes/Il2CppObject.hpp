@@ -25,9 +25,9 @@
 
 #include "../ModLoader.hpp"
 
-MODLOADER_NAMESPACE_BEGIN()
-struct Il2CppObject{
-	LPVOID pTypeInfo;
-	LPVOID pMonitorData;
-};
-MODLOADER_NAMESPACE_END()
+MODLOADER_NAMESPACE_BEGIN() {
+   struct Il2CppObject {
+      LPVOID pTypeInfo;
+      LPVOID pMonitorData;
+   };
+} MODLOADER_NAMESPACE_END()

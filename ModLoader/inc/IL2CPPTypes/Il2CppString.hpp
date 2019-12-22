@@ -26,11 +26,10 @@
 #include "../ModLoader.hpp"
 #include "Il2CppObject.hpp"
 
-MODLOADER_NAMESPACE_BEGIN()
-struct Il2CppString
-{
-	Il2CppObject object;
-	int32_t      length; // does not include the trailing \0
-	wchar_t*     string;
-};
-MODLOADER_NAMESPACE_END()
+MODLOADER_NAMESPACE_BEGIN() {
+   struct Il2CppString {
+      Il2CppObject object;
+      int32_t      length; // does not include the trailing \0
+      wchar_t*     string;
+   };
+} MODLOADER_NAMESPACE_END()

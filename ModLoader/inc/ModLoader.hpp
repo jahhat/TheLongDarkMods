@@ -30,44 +30,56 @@
 // ModLoader Macros
 #define MODLOADER_API __fastcall
 #define MODLOADER_NAMESPACE ModLoader
-#define MODLOADER_NAMESPACE_BEGIN() namespace MODLOADER_NAMESPACE {
-#define MODLOADER_NAMESPACE_END()   } // MODLOADER_NAMESPACE
+#define MODLOADER_NAMESPACE_BEGIN() namespace MODLOADER_NAMESPACE
+#define MODLOADER_NAMESPACE_END()   // MODLOADER_NAMESPACE
 #define MODLOADER_MAKE_FUNCTION_ACCESSIBLE() __pragma(comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__))
-
 // System Macros
 #define MODLOADER_DISABLE_THREAD_CALLS(hModule, reason) if (reason == DLL_PROCESS_ATTACH) DisableThreadLibraryCalls(hModule)
 
-MODLOADER_NAMESPACE_BEGIN()
-/// <summary>Gets the base address of GameAssembly.dll</summary>
-/// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
-/// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
-DWORD64 MODLOADER_API GetBaseAddress(bool blockUntilReturn = true) {
-   HMODULE gaHandle = GetModuleHandleW(L"GameAssembly.dll");
-   if (blockUntilReturn) {
-
-   } else {
-      if (!gaHandle)
-         return NULL;
+MODLOADER_NAMESPACE_BEGIN() {
+   /// <summary>Gets the base address of GameAssembly.dll</summary>
+   /// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
+   /// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
+   DWORD64 MODLOADER_API GetBaseAddress(bool blockUntilReturn = true) {
+      HMODULE gaHandle = GetModuleHandleW(L"GameAssembly.dll");
+      if (blockUntilReturn) {
+         while (!gaHandle) {
+            gaHandle = GetModuleHandleW(L"GameAssembly.dll");
+            Sleep(100);
+         }
+      } else {
+         if (!gaHandle)
+            return NULL;
+      }
+      return reinterpret_cast<DWORD64>(gaHandle);
    }
-   return reinterpret_cast<DWORD64>(gaHandle);
-}
 
-/// <summary>Gets the class instance of the requested type from the given address.</summary>
-/// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
-/// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
-template <typename T>
-T* GetGameClassInstanceAt(DWORD64 address, const bool addBaseAddressToAddress = true) {
-   if (!address)
+   /// <summary>Gets the class instance of the requested type from the given address.</summary>
+   /// <param name="address">The address/offset that points to the requested class instance object.</param>  
+   /// <param name="addBaseAddressToAddress">Whether to add the base address from <see cref="GetBaseAddress"/> to <paramref name="address"/>.</param>  
+   /// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
+   /// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
+   /// <remarks>The function will return nullptr if <paramref name="addBaseAddressToAddress"/> is true and <see cref="GetBaseAddress"/> fails.</remarks>
+   template <typename T>
+   T* GetGameClassInstanceAt(DWORD64 address, const bool addBaseAddressToAddress = true, bool blockUntilReturn = true) {
+      if (!address)
+         return nullptr;
+
+      address += (addBaseAddressToAddress ? GetBaseAddress(blockUntilReturn) : 0);
+      if (!*address)
+         return nullptr;
+
+      T** ppClassInstance = reinterpret_cast<T**>(*address + 0xB8);
+      if (ppClassInstance && !*ppClassInstance)
+         return *ppClassInstance;
+
+      if (blockUntilReturn) {
+         for (;;) {
+            if (ppClassInstance && !*ppClassInstance)
+               return *ppClassInstance;
+            Sleep(250);
+         }
+      }
       return nullptr;
-
-   address += addBaseAddressToAddress;
-   if (!*address)
-      return nullptr;
-
-   T** ppClassInstance = reinterpret_cast<T**>(*address + 0xB8);
-   if (ppClassInstance && !*ppClassInstance)
-      return *ppClassInstance;
-
-   return nullptr;
-}
-MODLOADER_NAMESPACE_END()
+   }
+} MODLOADER_NAMESPACE_END()
