@@ -87,11 +87,6 @@ DWORD WINAPI Init(LPVOID) {
          }
       }
    }
-   // TODO: require config.json from modders, do priority listing
-   for (auto& modDLLHandle : loadedMods) {
-      if (auto fnOnLoad = GetProcAddress(modDLLHandle, "ModLoader::OnLoad"))
-         std::thread(reinterpret_cast<void(__stdcall*)()>(fnOnLoad)).detach();
-   }
 
    if (loadedMirrorHook) {
       HWND windowHandle = FindWindowW(NULL, L"TheLongDark");
@@ -101,6 +96,12 @@ DWORD WINAPI Init(LPVOID) {
       }
 
       MirrorHook::PrepareFor(MirrorHook::Game::UniversalD3D11, L"TheLongDark");
+   }
+
+   // TODO: require config.json from modders, do priority listing
+   for (auto& modDLLHandle : loadedMods) {
+      if (auto fnOnLoad = GetProcAddress(modDLLHandle, "ModLoader::OnLoad"))
+         std::thread(reinterpret_cast<void(__stdcall*)()>(fnOnLoad)).detach();
    }
 
    return FALSE;
