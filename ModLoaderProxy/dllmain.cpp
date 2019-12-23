@@ -26,9 +26,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-void UnityMain() {
+void UnityMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
 #pragma comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
-   reinterpret_cast<void(__fastcall*)()>(_Notnull_ GetProcAddress(LoadLibraryW(L"RealUnityPlayer.dll"), "UnityMain"))();
+   reinterpret_cast<void(__fastcall*)(HINSTANCE, HINSTANCE, LPSTR, int)>
+      (_Notnull_ GetProcAddress(LoadLibraryW(L"RealUnityPlayer.dll"), "UnityMain"))(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
 }
 
 DWORD WINAPI Init(LPVOID) {
