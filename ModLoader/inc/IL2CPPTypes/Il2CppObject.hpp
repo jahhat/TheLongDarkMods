@@ -26,9 +26,9 @@
 #pragma once
 #include "../ModLoader.hpp"
 
-MODLOADER_NAMESPACE_BEGIN() {
+MOD_NAMESPACE_BEGIN() {
    struct Il2CppObject {
       LPVOID pTypeInfo;
       LPVOID pMonitorData;
    };
-} MODLOADER_NAMESPACE_END()
+} MOD_NAMESPACE_END()

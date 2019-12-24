@@ -23,24 +23,27 @@
    SOFTWARE.
 */
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+// dear imgui: Renderer for DirectX9
+// This needs to be used along with a Platform Binding (e.g. Win32)
 
-void __fastcall UnityMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-#pragma comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
-   reinterpret_cast<void(__fastcall*)(HINSTANCE, HINSTANCE, LPSTR, int)>
-      (_Notnull_ GetProcAddress(LoadLibraryW(L"RealUnityPlayer.dll"), "UnityMain"))(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-}
+// Implemented features:
+//  [X] Renderer: User texture binding. Use 'LPDIRECT3DTEXTURE9' as ImTextureID. Read the FAQ about ImTextureID!
+//  [X] Renderer: Support for large meshes (64k+ vertices) with 16-bit indices.
 
-DWORD WINAPI Init(LPVOID) {
-   LoadLibraryW(L"ModLoader.dll");
-   return FALSE;
-}
+// You can copy and use unmodified imgui_impl_* files in your project. See main.cpp for an example of using this.
+// If you are new to dear imgui, read examples/README.txt and read the documentation at the top of imgui.cpp.
+// https://github.com/ocornut/imgui
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH) {
-      DisableThreadLibraryCalls(hModule);
-      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
-   }
-   return TRUE;
+#pragma once
+
+struct IDirect3DDevice9;
+namespace ImGui_ImplDX9 {
+   IMGUI_IMPL_API bool     Init(IDirect3DDevice9* device);
+   IMGUI_IMPL_API void     Shutdown();
+   IMGUI_IMPL_API void     NewFrame();
+   IMGUI_IMPL_API void     RenderDrawData(ImDrawData* draw_data);
+
+   // Use if you want to reset your rendering device without losing ImGui state.
+   IMGUI_IMPL_API bool     CreateDeviceObjects();
+   IMGUI_IMPL_API void     InvalidateDeviceObjects();
 }

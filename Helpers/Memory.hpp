@@ -49,7 +49,7 @@ namespace Memory {
       return (DWORD32)(to - from - 0x5);
    }
 
-   void writeRaw(const DWORD64 to, const bool isToAbsolute, const int32_t byteCount, ...) {
+   static void writeRaw(const DWORD64 to, const bool isToAbsolute, const int32_t byteCount, ...) {
       DWORD64 addr = to + (isToAbsolute ? 0 : baseAddress);
 
       EnterCriticalSection(&cs);

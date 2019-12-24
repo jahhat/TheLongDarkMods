@@ -23,24 +23,24 @@
    SOFTWARE.
 */
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+// dear imgui: Platform Binding for Windows (standard windows API for 32 and 64 bits applications)
+// This needs to be used along with a Renderer (e.g. DirectX11, OpenGL3, Vulkan..)
 
-void __fastcall UnityMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-#pragma comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
-   reinterpret_cast<void(__fastcall*)(HINSTANCE, HINSTANCE, LPSTR, int)>
-      (_Notnull_ GetProcAddress(LoadLibraryW(L"RealUnityPlayer.dll"), "UnityMain"))(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-}
+// Implemented features:
+//  [X] Platform: Clipboard support (for Win32 this is actually part of core imgui)
+//  [X] Platform: Mouse cursor shape and visibility. Disable with 'io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange'.
+//  [X] Platform: Keyboard arrays indexed using VK_* Virtual Key Codes, e.g. ImGui::IsKeyPressed(VK_SPACE).
+//  [X] Platform: Gamepad support. Enabled with 'io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad'.
 
-DWORD WINAPI Init(LPVOID) {
-   LoadLibraryW(L"ModLoader.dll");
-   return FALSE;
-}
+#pragma once
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH) {
-      DisableThreadLibraryCalls(hModule);
-      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
-   }
-   return TRUE;
-}
+IMGUI_IMPL_API bool     ImGui_ImplWin32_Init(void* hwnd);
+IMGUI_IMPL_API void     ImGui_ImplWin32_Shutdown();
+IMGUI_IMPL_API void     ImGui_ImplWin32_NewFrame();
+
+// Handler for Win32 messages, update mouse/keyboard data.
+// You may or not need this for your implementation, but it can serve as reference for handling inputs.
+// Intentionally commented out to avoid dragging dependencies on <windows.h> types. You can COPY this line into your .cpp code instead.
+/*
+IMGUI_IMPL_API LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+*/

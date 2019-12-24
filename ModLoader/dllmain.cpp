@@ -23,12 +23,12 @@
    SOFTWARE.
 */
 
-#define MIRRORHOOK_DEFINITIONS_PATH "C:\Users\berkay\source\repos\MirrorHook\MirrorHook\inc\Definitions.hpp"
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "inc/ModLoader.hpp"
 #include <filesystem>
 #include <string>
 #include <thread>
+
+#define  MIRRORHOOK_DEFINITIONS_PATH "C:\Users\berkay\source\repos\MirrorHook\MirrorHook\inc\Definitions.hpp"
 #include MIRRORHOOK_DEFINITIONS_PATH
 
 HMODULE hThisModule = NULL;
@@ -51,6 +51,7 @@ DWORD WINAPI Init(LPVOID) {
    auto& gameDir          = std::filesystem::path(szGameDir).parent_path();
    auto& modsDir          = gameDir / szModsFolderName;
 
+   // Load MirrorHook
    if (!std::filesystem::exists(gameDir / L"MirrorHook.dll")) {
       MessageBoxW(NULL, L"MirrorHook.dll is missing. Some mods may not work/game might be unstable.", L"TLD ModLoader - WARNING", MB_ICONWARNING);
    } else {
@@ -61,6 +62,7 @@ DWORD WINAPI Init(LPVOID) {
       }
    }
 
+   // Load mods
    if (std::filesystem::exists(modsDir) && std::filesystem::is_directory(modsDir)) {
       SetCurrentDirectoryW(modsDir.c_str());
 
@@ -88,20 +90,27 @@ DWORD WINAPI Init(LPVOID) {
       }
    }
 
+   // Wait for Unity to init
+   while (!GetModuleHandleW(L"GameAssembly.dll"))
+      Sleep(250);
+
+   // Init MirrorHook
    if (loadedMirrorHook) {
       HWND windowHandle = FindWindowW(NULL, L"TheLongDark");
       while (!windowHandle) {
          windowHandle = FindWindowW(NULL, L"TheLongDark");
-         Sleep(100);
+         Sleep(1000);
       }
 
-      MirrorHook::PrepareFor(MirrorHook::Game::UniversalD3D11, L"TheLongDark");
+      MirrorHook::PrepareFor(MirrorHook::Framework::UniversalD3D11, &windowHandle);
    }
 
-   // TODO: require config.json from modders, do priority listing
+   // Call Mod::OnLoad
+   std::string strFnModOnload = _STRINGIFY(MOD_NAMESPACE) + std::string("::OnLoad");
    for (auto& modDLLHandle : loadedMods) {
-      if (auto fnOnLoad = GetProcAddress(modDLLHandle, "ModLoader::OnLoad"))
-         std::thread(reinterpret_cast<void(__stdcall*)()>(fnOnLoad)).detach();
+      // TODO: require config.json from modders, do priority listing
+      if (auto fnOnLoad = GetProcAddress(modDLLHandle, strFnModOnload.c_str()))
+         std::thread(reinterpret_cast<MOD_NAMESPACE::_internal::fnOnLoad>(fnOnLoad), loadedMirrorHook).detach();
    }
 
    return FALSE;

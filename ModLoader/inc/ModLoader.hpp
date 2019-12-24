@@ -28,19 +28,31 @@
 #include <Windows.h>
 #include <cstdint>
 
+// Mod Macros
+#define MOD_NAMESPACE Mod
+#define MOD_NAMESPACE_BEGIN() namespace MOD_NAMESPACE
+#define MOD_NAMESPACE_END()   // MOD_NAMESPACE
 // ModLoader Macros
-#define MODLOADER_API __fastcall
+#define MODLOADER_API __fastcall // defaults to ms_abi
 #define MODLOADER_NAMESPACE ModLoader
 #define MODLOADER_NAMESPACE_BEGIN() namespace MODLOADER_NAMESPACE
 #define MODLOADER_NAMESPACE_END()   // MODLOADER_NAMESPACE
 #define MODLOADER_MAKE_FUNCTION_ACCESSIBLE() __pragma(comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__))
 // System Macros
 #define MODLOADER_DISABLE_THREAD_CALLS(hModule, reason) if (reason == DLL_PROCESS_ATTACH) DisableThreadLibraryCalls(hModule)
+// MirrorHook
+#define MODLOADER_MIRRORHOOK_DEFINITIONS_PATH "C:\Users\berkay\source\repos\MirrorHook\MirrorHook\inc\Definitions.hpp"
+// Extension Macros
+#define _STR(x) #x
+#define _STRINGIFY(x) _STR(x)
 
-MODLOADER_NAMESPACE_BEGIN() {
+MOD_NAMESPACE_BEGIN() {
    namespace _internal {
       static inline DWORD64 baseAddress = NULL;
+
+      typedef void(MODLOADER_API* fnOnLoad)(bool isMirrorHookLoaded);
    }
+
    /// <summary>Gets the base address of GameAssembly.dll</summary>
    /// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
    /// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  

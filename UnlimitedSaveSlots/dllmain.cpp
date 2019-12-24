@@ -28,13 +28,13 @@
 #include "../ModLoader/inc/ModLoader.hpp"
 #include "../ModLoader/inc/GameTypes/SaveGameSlots.hpp"
 
-namespace ModLoader {
+MOD_NAMESPACE_BEGIN() {
    void MODLOADER_API OnLoad() {
       MODLOADER_MAKE_FUNCTION_ACCESSIBLE();
-      auto* pSaveGameSlots = ModLoader::GetGameClassInstanceAt<SaveGameSlots>(SaveGameSlots::_ClassInstanceOffset);
+      auto* pSaveGameSlots = GetGameClassInstanceAt<SaveGameSlots>(SaveGameSlots::_ClassInstanceOffset);
       pSaveGameSlots->MAX_SAVESLOTS = 999;
    }
-}
+} MOD_NAMESPACE_END()
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
    MODLOADER_DISABLE_THREAD_CALLS(hModule, reason);

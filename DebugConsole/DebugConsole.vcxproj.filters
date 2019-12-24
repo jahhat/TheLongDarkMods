@@ -2,5 +2,114 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Extensions\InGame Menu\InGameMenu.cpp">
+      <Filter>Extensions\InGame Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\imgui\imgui.cpp">
+      <Filter>Helpers\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\imgui\imgui_demo.cpp">
+      <Filter>Helpers\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\imgui\imgui_draw.cpp">
+      <Filter>Helpers\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\imgui\imgui_widgets.cpp">
+      <Filter>Helpers\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\imgui\win32\imgui_impl_win32.cpp">
+      <Filter>Helpers\imgui\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\imgui\dx9\imgui_impl_dx9.cpp">
+      <Filter>Helpers\imgui\dx9</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\imgui\dx11\imgui_impl_dx11.cpp">
+      <Filter>Helpers\imgui\dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>default</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\imgui\imgui_user.cpp">
+      <Filter>Helpers\imgui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Extensions\InGame Menu\InGameMenu.h">
+      <Filter>Extensions\InGame Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Extensions\Extensions.h">
+      <Filter>Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="Extensions\InGame Menu\Items\Debug.hpp">
+      <Filter>Extensions\InGame Menu\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Extensions\InGame Menu\Items\_BaseInGameMenuItem.hpp">
+      <Filter>Extensions\InGame Menu\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Extensions\InGame Menu\Items\_LoadInGameMenuItems.hpp">
+      <Filter>Extensions\InGame Menu\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\imstb_truetype.h">
+      <Filter>Helpers\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\imconfig.h">
+      <Filter>Helpers\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\imgui.h">
+      <Filter>Helpers\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\imgui_internal.h">
+      <Filter>Helpers\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\imstb_rectpack.h">
+      <Filter>Helpers\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\imstb_textedit.h">
+      <Filter>Helpers\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\dx9\imgui_impl_dx9.h">
+      <Filter>Helpers\imgui\dx9</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\dx11\imgui_impl_dx11.h">
+      <Filter>Helpers\imgui\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\win32\imgui_impl_win32.h">
+      <Filter>Helpers\imgui\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>default</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\imgui\imgui_user.h">
+      <Filter>Helpers\imgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Extensions">
+      <UniqueIdentifier>{8cbfbca7-7cad-4acd-a1b9-b3c30e5ca18a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extensions\InGame Menu">
+      <UniqueIdentifier>{d23c1834-5605-4297-8bb0-374125c4d3fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extensions\InGame Menu\Items">
+      <UniqueIdentifier>{5134605a-39ff-4425-8e5e-d118735ebc22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{2c4aa7b8-e59d-4bd6-9f3d-bd1247bda60c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers\imgui">
+      <UniqueIdentifier>{e7a638d1-6739-42fd-849b-819d5bcc7664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers\imgui\win32">
+      <UniqueIdentifier>{fa176033-2102-42fd-a9a3-5f230fcadbfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers\imgui\dx9">
+      <UniqueIdentifier>{96649079-79bc-4b82-9d92-2e0b724d1f5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers\imgui\dx11">
+      <UniqueIdentifier>{2da6dee3-2d47-49af-a420-01a449534142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="default">
+      <UniqueIdentifier>{270a2b52-d7fa-40be-89d7-56c53f3e105c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -24,12 +24,9 @@
    SOFTWARE.
 */
 
-#define MIRRORHOOK_DEFINITIONS_PATH "C:\Users\berkay\source\repos\MirrorHook\MirrorHook\inc\Definitions.hpp"
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include "../Helpers/Memory.hpp"
-#include <d3d11.h>
-#include MIRRORHOOK_DEFINITIONS_PATH
+#include "stdafx.h"
+#include "Extensions/InGame Menu/InGameMenu.h"
+#include "Extensions/InGame Menu/Items/_LoadInGameMenuItems.hpp"
 
 DWORD WINAPI _gameThread(LPVOID) {
    for (;;) {
@@ -75,19 +72,25 @@ void hkInstantiateInterfaceObjects() {
 }
 #pragma optimize( "", on)
 
-DWORD WINAPI Init(LPVOID) {
-   Memory::Init();
 
-   Memory::writeRaw((DWORD64)asmProxyRemoteThread, true, 7, 0x45, 0x33, 0xC9, 0x4C, 0x8B, 0xC7, 0xC3);
-   Memory::writeJMP((DWORD64)hkInstantiateInterfaceObjects + 0x2D, true, (DWORD64)asmProxyRemoteThread, true);
-   Memory::writeCall(0x712ED0, false, (DWORD64)hkInstantiateInterfaceObjects, true);
-   Memory::writeNOP(0x712ED0 + 0x5, 1);
+MOD_NAMESPACE_BEGIN() {
+   void MODLOADER_API OnLoad(bool isMirrorHookLoaded) {
+      MODLOADER_MAKE_FUNCTION_ACCESSIBLE();
+      Memory::Init();
 
-   return TRUE;
+     // Memory::writeRaw((DWORD64)asmProxyRemoteThread, true, 7, 0x45, 0x33, 0xC9, 0x4C, 0x8B, 0xC7, 0xC3);
+     // Memory::writeJMP((DWORD64)hkInstantiateInterfaceObjects + 0x2D, true, (DWORD64)asmProxyRemoteThread, true);
+     // Memory::writeCall(0x712ED0, false, (DWORD64)hkInstantiateInterfaceObjects, true);
+      //Memory::writeNOP(0x712ED0 + 0x5, 1);
+
+      if (isMirrorHookLoaded) {
+         Extensions::InGameMenu::Init();
+         Extensions::InGameMenu::loadItemsToInGameMenu();
+      }
+   }
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH)
-      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
+   MODLOADER_DISABLE_THREAD_CALLS(hModule, reason);
    return TRUE;
 }

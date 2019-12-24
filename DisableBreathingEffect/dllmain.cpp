@@ -28,7 +28,7 @@
 #include "../Helpers/Memory.hpp"
 #include "../ModLoader/inc/ModLoader.hpp"
 
-namespace ModLoader {
+MOD_NAMESPACE_BEGIN() {
    void MODLOADER_API OnLoad() {
       MODLOADER_MAKE_FUNCTION_ACCESSIBLE();
       Memory::Init();
@@ -36,7 +36,7 @@ namespace ModLoader {
                        0x586B5D, false  // "if (GameManager.GetPlayerAnimationComponent().IsAiming() && GameManager.GetFreezingComponent().IsFreezing())"
       );
    }
-}
+} MOD_NAMESPACE_END()
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
    MODLOADER_DISABLE_THREAD_CALLS(hModule, reason);

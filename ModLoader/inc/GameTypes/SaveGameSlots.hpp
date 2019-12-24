@@ -27,7 +27,7 @@
 #include "../ModLoader.hpp"
 #include "../IL2CPPTypes/Il2CppString.hpp"
 
-MODLOADER_NAMESPACE_BEGIN() {
+MOD_NAMESPACE_BEGIN() {
    struct SaveGameSlots {
       static inline DWORD64 _ClassInstanceOffset = 0x3C498C8;
 
@@ -45,4 +45,4 @@ MODLOADER_NAMESPACE_BEGIN() {
       /* +0x00 */ //HashSet<string> m_InvalidSlots; 
       /* +0x00 */ //Dictionary<string, string> m_SlotDisplayNames; 
    };
-} MODLOADER_NAMESPACE_END()
+} MOD_NAMESPACE_END()

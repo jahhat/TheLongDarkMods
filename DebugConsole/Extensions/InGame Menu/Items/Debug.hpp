@@ -23,24 +23,37 @@
    SOFTWARE.
 */
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#pragma once
+#include "stdafx.h"
+#include "_BaseInGameMenuItem.hpp"
+#include "Extensions\Extensions.h"
 
-void __fastcall UnityMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-#pragma comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
-   reinterpret_cast<void(__fastcall*)(HINSTANCE, HINSTANCE, LPSTR, int)>
-      (_Notnull_ GetProcAddress(LoadLibraryW(L"RealUnityPlayer.dll"), "UnityMain"))(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-}
+namespace Extensions {
+   namespace InGameMenu {
+      struct Debug : _BaseInGameMenuItem {
+         const virtual void loadData() override {
+            hasLoadedData = true;
 
-DWORD WINAPI Init(LPVOID) {
-   LoadLibraryW(L"ModLoader.dll");
-   return FALSE;
-}
+         }
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH) {
-      DisableThreadLibraryCalls(hModule);
-      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
+         const virtual void onFrame() override {}
+         const virtual void beforeReset() override {}
+         const virtual void afterReset() override {}
+
+         const virtual bool displayMenuItem(const ImVec2& buttonSize) override {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.98f, 0.59f, 0.26f, 0.40f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.98f, 0.59f, 0.26f, 1.00f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.98f, 0.53f, 0.06f, 1.00f));
+            bool ret = ImGui::Button("Debug", buttonSize);
+            ImGui::PopStyleColor();
+            ImGui::PopStyleColor();
+            ImGui::PopStyleColor();
+            return ret;
+         }
+
+         const virtual bool displayMenu() override {
+            return true;
+         }
+      };
    }
-   return TRUE;
 }

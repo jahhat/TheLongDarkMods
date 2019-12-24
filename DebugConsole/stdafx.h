@@ -23,24 +23,15 @@
    SOFTWARE.
 */
 
+#pragma once
+
+#define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
+#include <algorithm>
+#include <vector>
 
-void __fastcall UnityMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-#pragma comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
-   reinterpret_cast<void(__fastcall*)(HINSTANCE, HINSTANCE, LPSTR, int)>
-      (_Notnull_ GetProcAddress(LoadLibraryW(L"RealUnityPlayer.dll"), "UnityMain"))(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-}
-
-DWORD WINAPI Init(LPVOID) {
-   LoadLibraryW(L"ModLoader.dll");
-   return FALSE;
-}
-
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH) {
-      DisableThreadLibraryCalls(hModule);
-      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
-   }
-   return TRUE;
-}
+#include "../Helpers/Memory.hpp"
+#include "../ModLoader/inc/ModLoader.hpp"
+#include <D3DX11.h>
+#include MODLOADER_MIRRORHOOK_DEFINITIONS_PATH

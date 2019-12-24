@@ -23,24 +23,22 @@
    SOFTWARE.
 */
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#pragma once
+#include "stdafx.h"
+#include "Helpers\imgui\imgui.h"
 
-void __fastcall UnityMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-#pragma comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
-   reinterpret_cast<void(__fastcall*)(HINSTANCE, HINSTANCE, LPSTR, int)>
-      (_Notnull_ GetProcAddress(LoadLibraryW(L"RealUnityPlayer.dll"), "UnityMain"))(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-}
+namespace Extensions {
+   namespace InGameMenu {
+      struct _BaseInGameMenuItem {
+         bool hasLoadedData            = false;
+         const virtual void loadData() = 0;
 
-DWORD WINAPI Init(LPVOID) {
-   LoadLibraryW(L"ModLoader.dll");
-   return FALSE;
-}
+         const virtual void onFrame()     = 0;
+         const virtual void beforeReset() = 0;
+         const virtual void afterReset()  = 0;
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID) {
-   if (reason == DLL_PROCESS_ATTACH) {
-      DisableThreadLibraryCalls(hModule);
-      CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&Init, NULL, 0, 0);
+         const virtual bool displayMenuItem(const ImVec2& buttonSize = ImVec2()) = 0;
+         const virtual bool displayMenu() = 0;
+      };
    }
-   return TRUE;
 }
