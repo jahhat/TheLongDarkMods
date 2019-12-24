@@ -76,27 +76,27 @@ MOD_NAMESPACE_BEGIN() {
    }
 
    /// <summary>Gets the class instance of the requested type from the given address.</summary>
-   /// <param name="rvaAddress">The address/offset that points to the requested class instance object.</param>  
+   /// <param name="rva">The relative virtual address that points to the requested class instance object.</param>  
    /// <param name="addBaseAddressToAddress">Whether to add the base address from <see cref="GetBaseAddress"/> to <paramref name="address"/>.</param>  
    /// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
    /// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
    /// <remarks>The function will return nullptr if <paramref name="addBaseAddressToAddress"/> is true and <see cref="GetBaseAddress"/> fails.</remarks>
    template <typename T>
-   static inline T* GetGameClassInstanceAt(DWORD64 rvaAddress, const bool addBaseAddressToAddress = true, bool blockUntilReturn = true) {
-      if (!rvaAddress)
+   static inline T* GetGameClassInstanceAt(DWORD64 rva, const bool addBaseAddressToAddress = true, bool blockUntilReturn = true) {
+      if (!rva)
          return nullptr;
 
-      rvaAddress += (addBaseAddressToAddress ? GetBaseAddress(blockUntilReturn) : 0);
-      if (!*(DWORD64*)rvaAddress) {
+      rva += (addBaseAddressToAddress ? GetBaseAddress(blockUntilReturn) : 0);
+      if (!*(DWORD64*)rva) {
          if (blockUntilReturn) {
-            while (!*(DWORD64*)rvaAddress)
+            while (!*(DWORD64*)rva)
                Sleep(250);
          } else {
             return nullptr;
          }
       }
 
-      T** ppClassInstance = reinterpret_cast<T**>(*(DWORD64*)rvaAddress + 0xB8);
+      T** ppClassInstance = reinterpret_cast<T**>(*(DWORD64*)rva + 0xB8);
       if (ppClassInstance && *ppClassInstance)
          return *ppClassInstance;
 
@@ -107,4 +107,4 @@ MOD_NAMESPACE_BEGIN() {
       }
       return nullptr;
    }
-} MODLOADER_NAMESPACE_END()
+} MOD_NAMESPACE_END()
