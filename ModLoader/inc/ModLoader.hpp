@@ -26,85 +26,49 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <cstdint>
+#include <functional> // std::function
+#include "ModLoader_Macros.h"
 
-// Mod Macros
-#define MOD_NAMESPACE Mod
-#define MOD_NAMESPACE_BEGIN() namespace MOD_NAMESPACE
-#define MOD_NAMESPACE_END()   // MOD_NAMESPACE
-// ModLoader Macros
-#define MODLOADER_API __fastcall // defaults to ms_abi
-#define MODLOADER_NAMESPACE ModLoader
-#define MODLOADER_NAMESPACE_BEGIN() namespace MODLOADER_NAMESPACE
-#define MODLOADER_NAMESPACE_END()   // MODLOADER_NAMESPACE
+// Easy access
 #define MODLOADER_MAKE_FUNCTION_ACCESSIBLE() __pragma(comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__))
 // System Macros
 #define MODLOADER_DISABLE_THREAD_CALLS(hModule, reason) if (reason == DLL_PROCESS_ATTACH) DisableThreadLibraryCalls(hModule)
 // MirrorHook
-#define MODLOADER_MIRRORHOOK_DEFINITIONS_PATH "C:\Users\berkay\source\repos\MirrorHook\MirrorHook\inc\Definitions.hpp"
-// Extension Macros
-#define _STR(x) #x
-#define _STRINGIFY(x) _STR(x)
+#define MODLOADER_MIRRORHOOK_DEFINITIONS_PATH "C:/Users/berkay/source/repos/MirrorHook/MirrorHook/inc/Definitions.hpp"
 
 MOD_NAMESPACE_BEGIN() {
+   /// <summary>
+   /// You probably don't want something from here.
+   /// </summary>
    namespace _internal {
-      static inline DWORD64 baseAddress = NULL;
+      typedef void(MODLOADER_API* fnExecuteInGameThread)(const std::function<void()>&);
+      typedef DWORD64(MODLOADER_API* fnGetBaseAddress)(const bool);
+      typedef LPVOID(MODLOADER_API* fnGetGameClassInstanceAt)(DWORD64, const bool, const bool);
+   }
 
-      typedef void(MODLOADER_API* fnOnLoad)(bool isMirrorHookLoaded);
+   /// <summary>
+   /// Calls the given function pointer with the game's thread context. The functions are executed every second.
+   /// </summary>
+   /// <param name="pFunctionToBeCalled">A pointer to the function that will be called.</param>
+   inline void MODLOADER_API ExecuteInGameThread(const std::function<void()>& functionToBeCalled) {
+      reinterpret_cast<_internal::fnExecuteInGameThread>(_Notnull_ GetProcAddress(GetModuleHandle(TEXT("ModLoader.dll")), "ModLoader::Internals::ExecuteInGameThread"))(functionToBeCalled);
    }
 
    /// <summary>Gets the base address of GameAssembly.dll</summary>
    /// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
    /// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
-   static inline DWORD64 MODLOADER_API GetBaseAddress(bool blockUntilReturn = true) {
-      if (_internal::baseAddress)
-         return _internal::baseAddress;
-
-      HMODULE gaHandle = GetModuleHandleW(L"GameAssembly.dll");
-      if (blockUntilReturn) {
-         while (!gaHandle) {
-            gaHandle = GetModuleHandleW(L"GameAssembly.dll");
-            Sleep(100);
-         }
-      } else {
-         if (!gaHandle)
-            return NULL;
-      }
-
-      _internal::baseAddress = (DWORD64)gaHandle;
-      return _internal::baseAddress;
+   inline DWORD64 MODLOADER_API GetBaseAddress(const bool blockUntilReturn = true) {
+      return reinterpret_cast<_internal::fnGetBaseAddress>(_Notnull_ GetProcAddress(GetModuleHandle(TEXT("ModLoader.dll")), "ModLoader::Internals::GetBaseAddress"))(blockUntilReturn);
    }
 
    /// <summary>Gets the class instance of the requested type from the given address.</summary>
    /// <param name="rva">The relative virtual address that points to the requested class instance object.</param>  
-   /// <param name="addBaseAddressToAddress">Whether to add the base address from <see cref="GetBaseAddress"/> to <paramref name="address"/>.</param>  
+   /// <param name="addBaseAddressToRVA">Whether to add the base address from <see cref="GetBaseAddress"/> to <paramref name="rva"/>.</param>  
    /// <param name="blockUntilReturn">Whether to loop the function until the base address is returned. THIS USES <see cref="Sleep()"/>!</param>  
    /// <returns>The base address of GameAssembly.dll if successful, NULL if not.</returns>  
-   /// <remarks>The function will return nullptr if <paramref name="addBaseAddressToAddress"/> is true and <see cref="GetBaseAddress"/> fails.</remarks>
+   /// <remarks>The function will return nullptr if <paramref name="addBaseAddressToRVA"/> is true and <see cref="GetBaseAddress"/> fails.</remarks>
    template <typename T>
-   static inline T* GetGameClassInstanceAt(DWORD64 rva, const bool addBaseAddressToAddress = true, bool blockUntilReturn = true) {
-      if (!rva)
-         return nullptr;
-
-      rva += (addBaseAddressToAddress ? GetBaseAddress(blockUntilReturn) : 0);
-      if (!*(DWORD64*)rva) {
-         if (blockUntilReturn) {
-            while (!*(DWORD64*)rva)
-               Sleep(250);
-         } else {
-            return nullptr;
-         }
-      }
-
-      T** ppClassInstance = reinterpret_cast<T**>(*(DWORD64*)rva + 0xB8);
-      if (ppClassInstance && *ppClassInstance)
-         return *ppClassInstance;
-
-      if (blockUntilReturn) {
-         while (!ppClassInstance && _Notnull_ !*ppClassInstance)
-            Sleep(250);
-         return *ppClassInstance;
-      }
-      return nullptr;
+   inline T* MODLOADER_API GetGameClassInstanceAt(DWORD64 rva, const bool addBaseAddressToRVA = true, const bool blockUntilReturn = true) {
+      return (T*)reinterpret_cast<_internal::fnGetGameClassInstanceAt>(_Notnull_ GetProcAddress(GetModuleHandle(TEXT("ModLoader.dll")), "ModLoader::Internals::GetGameClassInstanceAt"))(rva, addBaseAddressToRVA, blockUntilReturn);
    }
 } MOD_NAMESPACE_END()

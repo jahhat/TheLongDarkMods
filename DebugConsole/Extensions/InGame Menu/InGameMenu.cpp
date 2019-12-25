@@ -28,7 +28,6 @@
 #include "InGameMenu.h"
 #include "Extensions/Extensions.h"
 // dear imgui
-//#include "Helpers\imgui\dx9\imgui_impl_dx9.h"
 #include "Helpers/imgui/dx11/imgui_impl_dx11.h"
 #include "Helpers/imgui/win32/imgui_impl_win32.h"
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -70,7 +69,7 @@ namespace Extensions {
          ImGui::NewFrame();
 
          static float scaling = 1.0f;
-         scaling = std::max(1.0f, pImGuiIO->DisplaySize.y / 2160.0f); // optimized for 4k
+         scaling = std::max(1.0f, pImGuiIO->DisplaySize.y / 1080.0f); // optimized for 1080p
          for (int32_t i = 0; i < pImGuiIO->Fonts->Fonts.Size; i++)
             pImGuiIO->Fonts->Fonts[i]->Scale = scaling;
 
@@ -98,7 +97,7 @@ namespace Extensions {
                            activeItem = item;
                      }
                   } else {
-                     if (ImGui::Button("< Back"))
+                     if (ImGui::Button("< Back (HOME)"))
                         activeItem = nullptr;
                      else {
                         if (!activeItem->displayMenu())
@@ -120,6 +119,7 @@ namespace Extensions {
             if (uMsg == WM_QUIT) {
                ImGui_ImplDX11::Shutdown();
                ImGui::DestroyContext();
+               return MirrorHook::WndProc::WndProcHook_NoReturn;
             }
 
             if (isMainWindowVisible)
@@ -128,6 +128,9 @@ namespace Extensions {
             if (!pImGuiIO->WantCaptureKeyboard || !pImGuiIO->WantTextInput) {
                if (uMsg == WM_KEYUP) {
                   switch (wParam) {
+                     case VK_HOME:
+                        activeItem = nullptr;
+                        return FALSE;
                      case VK_INSERT:
                         isMainWindowVisible = !isMainWindowVisible;
                         return FALSE;

@@ -24,7 +24,7 @@
 */
 
 #pragma once
-#include "../ModLoader.hpp"
+#include <cstdint>>
 #include "Il2CppObject.hpp"
 
 MOD_NAMESPACE_BEGIN() {

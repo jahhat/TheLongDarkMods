@@ -161,6 +161,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClInclude Include="ModLoader_Internals.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ModLoader.licenseheader" />
@@ -170,6 +171,7 @@
     <ClInclude Include="inc\IL2CPPTypes\Il2CppObject.hpp" />
     <ClInclude Include="inc\IL2CPPTypes\Il2CppString.hpp" />
     <ClInclude Include="inc\ModLoader.hpp" />
+    <ClInclude Include="inc\ModLoader_Macros.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

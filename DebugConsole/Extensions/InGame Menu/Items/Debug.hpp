@@ -31,27 +31,38 @@
 namespace Extensions {
    namespace InGameMenu {
       struct Debug : _BaseInGameMenuItem {
+      private:
+         bool isFlyModeOn = false;
+
+      public:
          const virtual void loadData() override {
             hasLoadedData = true;
-
          }
 
          const virtual void onFrame() override {}
-         const virtual void beforeReset() override {}
-         const virtual void afterReset() override {}
 
          const virtual bool displayMenuItem(const ImVec2& buttonSize) override {
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.98f, 0.59f, 0.26f, 0.40f));
             ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.98f, 0.59f, 0.26f, 1.00f));
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.98f, 0.53f, 0.06f, 1.00f));
-            bool ret = ImGui::Button("Debug", buttonSize);
+            bool ret = ImGui::Button("Debug [F1]", buttonSize);
             ImGui::PopStyleColor();
             ImGui::PopStyleColor();
             ImGui::PopStyleColor();
-            return ret;
+            return ret || ImGui::IsKeyPressed(VK_F1, false);
          }
 
          const virtual bool displayMenu() override {
+            if (ImGui::IsKeyPressed(VK_F1, false)) {
+               isFlyModeOn = !isFlyModeOn;
+               if (isFlyModeOn)
+                  Mod::ExecuteInGameThread([]() { reinterpret_cast<void(__fastcall*)()>(Mod::GetBaseAddress() + 0x5C17B0)(); });
+               else
+                  Mod::ExecuteInGameThread([]() { reinterpret_cast<void(__fastcall*)()>(Mod::GetBaseAddress() + 0x5C1D20)(); });
+            }
+            ImGui::PushItemDisabled();
+            ImGui::Checkbox("Fly Mode [F1]", &isFlyModeOn);
+            ImGui::PopItemDisabled();
             return true;
          }
       };

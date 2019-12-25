@@ -4,9 +4,6 @@
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\ModLoader.hpp">
-      <Filter>inc</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>default</Filter>
     </ClInclude>
@@ -19,6 +16,13 @@
     <ClInclude Include="inc\GameTypes\SaveGameSlots.hpp">
       <Filter>inc\GameTypes</Filter>
     </ClInclude>
+    <ClInclude Include="inc\ModLoader.hpp">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ModLoader_Macros.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="ModLoader_Internals.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="default">

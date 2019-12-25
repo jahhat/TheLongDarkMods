@@ -110,7 +110,7 @@ namespace Memory {
       InitializeCriticalSection(&cs);
 
       while (!baseAddress) {
-         baseAddress = (DWORD64)GetModuleHandle(L"GameAssembly.dll");
+         baseAddress = (DWORD64)GetModuleHandleW(L"GameAssembly.dll");
          Sleep(100);
       }
    }
