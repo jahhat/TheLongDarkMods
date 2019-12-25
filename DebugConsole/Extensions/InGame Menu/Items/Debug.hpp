@@ -32,7 +32,35 @@ namespace Extensions {
    namespace InGameMenu {
       struct Debug : _BaseInGameMenuItem {
       private:
-         bool isFlyModeOn = false;
+         bool isFlyModeOn     = false;
+         bool isDrawingMenu   = false;
+         bool isWaitingScene  = false;
+
+         char inputArray[256] ={ 0 };
+
+         int drawTextboxInCenter(const char* title, ImGuiInputTextFlags flags) {
+            static auto& size  = ImVec2(245.0f, 30.0f);
+            auto& displaySize  = pImGuiIO->DisplaySize;
+            auto& menuPosition = ImVec2((displaySize.x / 2) - (size.x / 2), (displaySize.y / 2) - (size.y / 2));
+
+            ImGui::SetNextWindowSizeConstraints(size, size);
+            ImGui::SetNextWindowSize(size, ImGuiCond_Always);
+            ImGui::SetNextWindowPos(menuPosition, ImGuiCond_Always);
+            if (ImGui::Begin(title ? title : "###InputMenu", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize)) {
+               ImGui::InputText("###InputTextbox", inputArray, _countof(inputArray), flags);
+               ImGui::SetKeyboardFocusHere(); ImGui::SameLine();
+               ImGui::PushItemDisabled();
+               ImGui::Button("[ENTER]");
+               ImGui::Button("Press [ESCAPE] to cancel.", ImVec2(ImGui::GetWindowContentRegionWidth(), 0.0f));
+               ImGui::PopItemDisabled();
+            } ImGui::End();
+            if (ImGui::IsKeyPressed(VK_ESCAPE, false))
+               return -1;
+            else if (ImGui::IsKeyPressed(VK_RETURN, false))
+               return 1;
+
+            return 0;
+         }
 
       public:
          const virtual void loadData() override {
@@ -53,15 +81,33 @@ namespace Extensions {
          }
 
          const virtual bool displayMenu() override {
-            if (ImGui::IsKeyPressed(VK_F1, false)) {
-               isFlyModeOn = !isFlyModeOn;
-               if (isFlyModeOn)
-                  Mod::ExecuteInGameThread([]() { reinterpret_cast<void(__fastcall*)()>(Mod::GetBaseAddress() + 0x5C17B0)(); });
-               else
-                  Mod::ExecuteInGameThread([]() { reinterpret_cast<void(__fastcall*)()>(Mod::GetBaseAddress() + 0x5C1D20)(); });
+            if (!isDrawingMenu) {
+               if (ImGui::IsKeyPressed(VK_F1, false)) {
+                  isFlyModeOn = !isFlyModeOn;
+                  if (isFlyModeOn)
+                     Mod::ExecuteInGameThread([]() { reinterpret_cast<void(__fastcall*)()>(Mod::GetBaseAddress() + 0x5C17B0)(); });
+                  else
+                     Mod::ExecuteInGameThread([]() { reinterpret_cast<void(__fastcall*)()>(Mod::GetBaseAddress() + 0x5C1D20)(); });
+               } else if (ImGui::IsKeyPressed(VK_F2, false)) {
+                  ZeroMemory(inputArray, _countof(inputArray));
+                  isDrawingMenu = isWaitingScene = true;
+               }
+            } else {
+               if (isWaitingScene) {
+                  auto ret = drawTextboxInCenter("Enter scene index (decimal)", ImGuiInputTextFlags_CharsDecimal);
+                  if (ret == 1) {
+                     int sceneIndex = atoi(inputArray);
+                     Mod::ExecuteInGameThread([sceneIndex]() { reinterpret_cast<void(__fastcall*)(int, int)>(Mod::GetBaseAddress() + 0x98E880)(sceneIndex, 0); });
+                     isDrawingMenu = isWaitingScene = false;
+                  } else if (ret == -1) {
+                     isDrawingMenu = isWaitingScene = false;
+                  }
+               }
             }
+
             ImGui::PushItemDisabled();
             ImGui::Checkbox("Fly Mode [F1]", &isFlyModeOn);
+            ImGui::Button("Load Scene by index [F2]");
             ImGui::PopItemDisabled();
             return true;
          }

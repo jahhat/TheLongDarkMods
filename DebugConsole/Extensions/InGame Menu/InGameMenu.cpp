@@ -113,7 +113,6 @@ namespace Extensions {
          }
       }
 
-
       LRESULT CALLBACK wndProcExtension(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
          if (isImguiInitialized) {
             if (uMsg == WM_QUIT) {

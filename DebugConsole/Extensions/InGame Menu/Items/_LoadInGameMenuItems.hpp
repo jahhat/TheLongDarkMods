@@ -31,7 +31,8 @@
 namespace Extensions {
    namespace InGameMenu {
       static void loadItemsToInGameMenu() {
-         static Debug         debug                 ={};
+         items.reserve(10);
+         static Debug debug ={};
 
          items.push_back(&debug);
          for (auto item : items) {
