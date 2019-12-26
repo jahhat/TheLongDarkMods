@@ -5,12 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ModLoaderInstaller"
         mc:Ignorable="d"
-        Title="TLD Mod Loader Installer" Height="140" Width="330" ResizeMode="CanMinimize" WindowStyle="ThreeDBorderWindow">
-   <Grid>
-      <TextBox Name="txtBoxGameDir" IsEnabled="False" IsReadOnly="True" HorizontalAlignment="Left" Height="20" Margin="10,10,0,0" VerticalAlignment="Top" Width="302"/>
-      <Button Name="btnBrowseGameDir" Content="Select The Long Dark folder" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="302" Click="BtnBrowseGameDir_Click"/>
-      <Button Name="btnInstallModLoader" IsEnabled="False" Content="Install mod loader" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="302" Click="BtnInstallModLoader_Click"/>
-      <TextBlock Name="lblInstallStatus" Visibility="Hidden" Foreground= "Green" HorizontalAlignment="Left" Margin="10,85,0,0" TextWrapping="Wrap" Text="Installed successfully!" TextAlignment="Center" VerticalAlignment="Top" Width="302"/>
-
-   </Grid>
+        Title="TLD Mod Loader Installer" Height="160" Width="340" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize">
+   <StackPanel Width="330">
+      <TextBox Name="txtBoxGameDir" IsEnabled="False" IsReadOnly="True" Height="20" Margin="10, 10, 10, 5"/>
+      <Button Name="btnBrowseGameDir" Content="Select The Long Dark folder" Click="btnBrowseGameDir_Click" Margin="10, 5, 10, 5"/>
+      <Button Name="btnInstallModLoader" IsEnabled="False" Content="Install mod loader" Click="btnInstallModLoader_Click" Margin="10, 5, 10, 5"/>
+      <TextBlock Name="lblStatus" Visibility="Visible" Foreground= "Black" TextWrapping="Wrap" Margin="12, 5, 12, 10" MaxWidth="310"/>
+   </StackPanel>
 </Window>
