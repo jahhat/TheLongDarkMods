@@ -27,14 +27,15 @@
 #include "stdafx.h"
 #include "_BaseInGameMenuItem.hpp"
 #include "Extensions\Extensions.h"
+#include "../ModLoader/inc/GameTypes/FlyMode.hpp"
 
 namespace Extensions {
    namespace InGameMenu {
       struct Debug : _BaseInGameMenuItem {
       private:
-         bool isFlyModeOn     = false;
-         bool isDrawingMenu   = false;
-         bool isWaitingScene  = false;
+         Mod::FlyMode* pFlyMode       = nullptr;;
+         bool          isDrawingMenu  = false;
+         bool          isWaitingScene = false;
 
          char inputArray[256] ={ 0 };
 
@@ -64,6 +65,7 @@ namespace Extensions {
 
       public:
          const virtual void loadData() override {
+            pFlyMode = Mod::GetGameClassInstanceAt<Mod::FlyMode>(Mod::FlyMode::_ClassInstanceOffset);
             hasLoadedData = true;
          }
 
@@ -83,11 +85,10 @@ namespace Extensions {
          const virtual bool displayMenu() override {
             if (!isDrawingMenu) {
                if (ImGui::IsKeyPressed(VK_F1, false)) {
-                  isFlyModeOn = !isFlyModeOn;
-                  if (isFlyModeOn)
-                     Mod::ExecuteInGameThread([]() { reinterpret_cast<void(__fastcall*)()>(Mod::GetBaseAddress() + 0x5C17B0)(); });
+                  if (!pFlyMode->m_Enabled)
+                     pFlyMode->Enter();
                   else
-                     Mod::ExecuteInGameThread([]() { reinterpret_cast<void(__fastcall*)()>(Mod::GetBaseAddress() + 0x5C1D20)(); });
+                     pFlyMode->TeleportPlayerAndExit();
                } else if (ImGui::IsKeyPressed(VK_F2, false)) {
                   ZeroMemory(inputArray, _countof(inputArray));
                   isDrawingMenu = isWaitingScene = true;
@@ -106,8 +107,8 @@ namespace Extensions {
             }
 
             ImGui::PushItemDisabled();
-            ImGui::Checkbox("Fly Mode [F1]", &isFlyModeOn);
-            ImGui::Button("Load Scene by index [F2]");
+            ImGui::Checkbox("[F1] Fly Mode", &pFlyMode->m_Enabled);
+            ImGui::Button("[F2] Load Scene by index");
             ImGui::PopItemDisabled();
             return true;
          }

@@ -23,6 +23,15 @@
       <Filter>inc</Filter>
     </ClInclude>
     <ClInclude Include="ModLoader_Internals.hpp" />
+    <ClInclude Include="inc\GameTypes\FlyMode.hpp">
+      <Filter>inc\GameTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\UnityTypes\Quaternion.hpp">
+      <Filter>inc\UnityTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\UnityTypes\Vector3.hpp">
+      <Filter>inc\UnityTypes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="default">
@@ -36,6 +45,9 @@
     </Filter>
     <Filter Include="inc\GameTypes">
       <UniqueIdentifier>{3912c499-c414-44be-a2d4-5c890ee87962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\UnityTypes">
+      <UniqueIdentifier>{3ccd0ba6-8ccb-4874-aab8-d2ea7af52d6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -161,6 +161,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClInclude Include="inc\GameTypes\FlyMode.hpp" />
+    <ClInclude Include="inc\UnityTypes\Quaternion.hpp" />
+    <ClInclude Include="inc\UnityTypes\Vector3.hpp" />
     <ClInclude Include="ModLoader_Internals.hpp" />
   </ItemGroup>
   <ItemGroup>

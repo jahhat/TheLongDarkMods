@@ -24,18 +24,12 @@
 */
 
 #pragma once
-// Mod Macros
-#define MOD_NAMESPACE Mod
-#define MOD_NAMESPACE_BEGIN() namespace MOD_NAMESPACE
-#define MOD_NAMESPACE_END()   // MOD_NAMESPACE
-// UnityEngine Macros
-#define UNITY_ENGINE_NAMESPACE UnityEngine
-#define UNITY_ENGINE_NAMESPACE_BEGIN() namespace UNITY_ENGINE_NAMESPACE
-#define UNITY_ENGINE_NAMESPACE_END()   // UNITY_ENGINE
-// ModLoader Macros
-#define MODLOADER_API __fastcall // defaults to ms_abi
-#define MODLOADER_NAMESPACE ModLoader
-#define MODLOADER_NAMESPACE_BEGIN() namespace MODLOADER_NAMESPACE
-#define MODLOADER_NAMESPACE_END()   // MODLOADER_NAMESPACE
-// MirrorHook
-#define MODLOADER_MIRRORHOOK_DEFINITIONS_PATH "C:/Users/berkay/source/repos/MirrorHook/MirrorHook/inc/Definitions.hpp"
+#include "../ModLoader.hpp"
+
+MOD_NAMESPACE_BEGIN() {
+   UNITY_ENGINE_NAMESPACE_BEGIN() {
+      struct Vector3 {
+         float x, y, z;
+      };
+   } UNITY_ENGINE_NAMESPACE_END()
+} MOD_NAMESPACE_END()

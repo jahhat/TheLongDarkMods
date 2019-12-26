@@ -97,7 +97,7 @@ namespace Extensions {
                            activeItem = item;
                      }
                   } else {
-                     if (ImGui::Button("< Back (HOME)"))
+                     if (ImGui::Button("[HOME] < Back"))
                         activeItem = nullptr;
                      else {
                         if (!activeItem->displayMenu())
