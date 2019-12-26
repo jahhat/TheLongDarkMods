@@ -92,7 +92,7 @@ MODLOADER_NAMESPACE_BEGIN() {
                continue;
             if (file.path().extension().string() != ".dll") // is a dll file
                continue;
-            if (GetModuleHandleW(file.path().c_str())) // is not already loaded
+            if (GetModuleHandleW(file.path().filename().c_str())) // is not already loaded
                continue;
 
             auto& modAbsolutePath = modsDir / file.path().filename();
