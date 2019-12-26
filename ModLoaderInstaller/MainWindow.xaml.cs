@@ -54,12 +54,13 @@ namespace ModLoaderInstaller {
    }
    public class CustomMultiValueConverter : IMultiValueConverter {
       public object Convert(Object[] values, Type targetType, Object parameter, System.Globalization.CultureInfo culture) {
+         Boolean a = true;
          foreach (Object value in values) {
             if (value is bool b) {
-               return b;
+               a &= b;
             }
          }
-         return true;
+         return a;
       }
       public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) {
          throw new NotSupportedException();
@@ -160,7 +161,7 @@ namespace ModLoaderInstaller {
       }
 
       public Boolean filesNeedUpdate() {
-         if (!File.Exists("ModLoader.dll") || !File.Exists("ModLoaderProxy.dll") || !File.Exists("MirrorHook.dll"))
+         if (!File.Exists("ModLoader\\ModLoader.dll") || !File.Exists("ModLoader\\ModLoaderProxy.dll") || !File.Exists("ModLoader\\MirrorHook.dll"))
             return true;
 
          using (var wc = new WebClient()) {
@@ -171,7 +172,7 @@ namespace ModLoaderInstaller {
                CurState = DownloadState.ParsingGitHubAPIResponse;
 
                dynamic json = JObject.Parse(jsonFromAPI);
-               if ((String)json.tag_name != FileVersionInfo.GetVersionInfo("ModLoader.dll").FileVersion)
+               if ((String)json.tag_name != FileVersionInfo.GetVersionInfo("ModLoader\\ModLoader.dll").FileVersion)
                   return true;
             } catch (WebException) {
                CurState = DownloadState.ErrorWhileConnecting;
@@ -224,15 +225,11 @@ namespace ModLoaderInstaller {
          }
       }
    }
-
-   public partial class MainWindow : Window, INotifyPropertyChanged {
-      private DownloadManager downloadManager = new DownloadManager();
-      private Thread downloaderThread;
-
+   public class GamePathSelectedProxy : INotifyPropertyChanged {
       public event PropertyChangedEventHandler PropertyChanged;
 
       private Boolean gamePathSelected = false;
-      private Boolean GamePathSelected {
+      public Boolean GamePathSelected {
          get {
             return gamePathSelected;
          }
@@ -243,6 +240,12 @@ namespace ModLoaderInstaller {
             }
          }
       }
+   }
+
+   public partial class MainWindow : Window {
+      private GamePathSelectedProxy gamePathSelectedProxy = new GamePathSelectedProxy();
+      private DownloadManager downloadManager = new DownloadManager();
+      private Thread downloaderThread;
 
       public MainWindow() {
          InitializeComponent();
@@ -263,7 +266,7 @@ namespace ModLoaderInstaller {
             Path = new PropertyPath("GamePathSelected"),
             UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
             Mode = BindingMode.OneWay,
-            Source = this
+            Source = gamePathSelectedProxy
          });
 
          BindingOperations.SetBinding(btnInstallModLoader, Button.IsEnabledProperty, installModBindings);
@@ -295,7 +298,7 @@ namespace ModLoaderInstaller {
                   MessageBox.Show("Selected folder does not have 'GameAssembly.dll'! Please select a valid TLD v1.60+ folder.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                } else {
                   txtBoxGameDir.Text = dialog.FileName;
-                  GamePathSelected = true;
+                  gamePathSelectedProxy.GamePathSelected = true;
                }
             }
          }
